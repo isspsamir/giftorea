@@ -1,0 +1,278 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Personalisation | Giftorea</title>
+
+  <!-- Page CSS -->
+  <link rel="stylesheet" href="assets/css/personalisation.css">
+</head>
+<body>
+
+  <!-- Optional: global mesh background (include only if not already present on the page) -->
+  <div class="site-bgmesh" aria-hidden="true">
+    <div class="mesh m-a"></div>
+    <div class="mesh m-b"></div>
+    <div class="blob one"></div>
+    <div class="blob two"></div>
+    <div class="rays"></div>
+  </div>
+
+  <!-- Viewport wrapper to cover full screen + center content (max-width: 1400px) -->
+  <div class="gftp-viewport">
+    <div class="container-xl">
+
+      <section class="gft-personalise gft-bg">
+        <!-- Header -->
+        <header class="gft-header">
+          <div class="gft-step-pill" id="gftStepPill" aria-live="polite">Step 1 of 6</div>
+          <h1 class="gft-title">Personalise your calendar</h1>
+          <p class="gft-subtitle">Make a few quick choices and we’ll tailor everything perfectly for you.</p>
+        </header>
+
+        <!-- Steps -->
+        <div class="gft-steps" id="gftSteps" aria-live="polite">
+ <!-- STEP 1: Style -->
+<section class="gft-step is-active" data-step-key="designStyle" data-step-index="0" aria-label="Choose your style">
+  <div class="gft-step-head">
+    <h2>Choose your style</h2>
+    <p>Pick the visual direction that best fits your brand or taste.</p>
+  </div>
+  <div class="gft-grid">
+    <button class="gft-card" role="radio" aria-checked="false" data-value="modern">
+      <span class="gft-card-art gft-art--modern" aria-hidden="true">
+        <img class="gft-card-img" loading="lazy"
+             src="assets/images/moderne.webp"
+             srcset="../assets/images/moderne.webp 1x, ../assets/images/moderne.webp 2x"
+             alt="Modern style preview">
+      </span>
+      <span class="gft-card-label">Modern</span>
+    </button>
+
+    <button class="gft-card" role="radio" aria-checked="false" data-value="classic">
+      <span class="gft-card-art gft-art--classic" aria-hidden="true">
+        <img class="gft-card-img" loading="lazy"
+             src="assets/images/classic.webp"
+             srcset="../assets/images/classic.webp 1x, ../assets/images/classic.webp 2x"
+             alt="Classic style preview">
+      </span>
+      <span class="gft-card-label">Classic</span>
+    </button>
+
+    <button class="gft-card" role="radio" aria-checked="false" data-value="luxury">
+      <span class="gft-card-art gft-art--minimal" aria-hidden="true">
+        <img class="gft-card-img" loading="lazy"
+             src="assets/images/luxury.webp"
+             srcset="../assets/images/luxury.webp 1x, ../assets/images/luxury.webp 2x"
+             alt="Luxury style preview">
+      </span>
+      <span class="gft-card-label">Luxury</span>
+    </button>
+  </div>
+</section>
+
+<!-- STEP 2: Calendar Type (Mix Hijri+Miladi or Miladi only) -->
+<section class="gft-step" data-step-key="calendarType" data-step-index="1" aria-label="Calendar type">
+  <div class="gft-step-head">
+    <h2>Type de calendrier</h2>
+    <p>Souhaitez-vous un calendrier <strong>mixte</strong> (Hijri + Miladi) ou <strong>Miladi seulement</strong> ?</p>
+  </div>
+
+  <div class="gft-grid">
+    <button class="gft-card" role="radio" aria-checked="false" data-value="mix">
+      <span class="gft-card-art gft-icon--mix" aria-hidden="true">
+        <img class="gft-card-img" loading="lazy"
+             src="/assets/personalise/cal-mix.png"
+             srcset="/assets/personalise/cal-mix.png 1x, /assets/personalise/cal-mix@2x.png 2x"
+             alt="Hijri + Miladi mixed calendar">
+      </span>
+      <span class="gft-card-label">Hijri + Miladi (mix)</span>
+    </button>
+
+    <button class="gft-card" role="radio" aria-checked="false" data-value="miladi">
+      <span class="gft-card-art gft-icon--miladi" aria-hidden="true">
+        <img class="gft-card-img" loading="lazy"
+             src="/assets/personalise/cal-miladi.png"
+             srcset="/assets/personalise/cal-miladi.png 1x, /assets/personalise/cal-miladi@2x.png 2x"
+             alt="Miladi only calendar">
+      </span>
+      <span class="gft-card-label">Miladi seulement</span>
+    </button>
+  </div>
+
+  <div class="gft-explain">
+    <ul class="gft-list">
+      <li><strong>Mix</strong> : Affiche les mois/jours dans les deux systèmes. Idéal si votre audience suit l’hégirien et le grégorien.</li>
+      <li><strong>Miladi seulement</strong> : Calendrier grégorien standard pour une communication générale et internationale.</li>
+    </ul>
+  </div>
+</section>
+
+<!-- STEP 3: Language -->
+<section class="gft-step" data-step-key="language" data-step-index="2" aria-label="Language">
+  <div class="gft-step-head">
+    <h2>Language</h2>
+    <p>We’ll typeset the months/days accordingly.</p>
+  </div>
+  <div class="gft-grid">
+    <button class="gft-card" role="radio" aria-checked="false" data-value="fr">
+      <span class="gft-card-art gft-flag gft-flag--fr" aria-hidden="true">
+        <img class="gft-card-img" loading="lazy"
+             src="/assets/personalise/lang-fr.png"
+             srcset="/assets/personalise/lang-fr.png 1x, /assets/personalise/lang-fr@2x.png 2x"
+             alt="French">
+      </span>
+      <span class="gft-card-label">Français</span>
+    </button>
+
+    <button class="gft-card" role="radio" aria-checked="false" data-value="en">
+      <span class="gft-card-art gft-flag gft-flag--en" aria-hidden="true">
+        <img class="gft-card-img" loading="lazy"
+             src="/assets/personalise/lang-en.png"
+             srcset="/assets/personalise/lang-en.png 1x, /assets/personalise/lang-en@2x.png 2x"
+             alt="English">
+      </span>
+      <span class="gft-card-label">English</span>
+    </button>
+  </div>
+</section>
+
+<!-- STEP 4: Design Package -->
+<section class="gft-step" data-step-key="designPackage" data-step-index="3" aria-label="Design package">
+  <div class="gft-step-head">
+    <h2>Design package</h2>
+    <p>Upgrade adds extra polish and layout refinements.</p>
+  </div>
+  <div class="gft-grid">
+    <button class="gft-card" role="radio" aria-checked="false" data-value="standard">
+      <span class="gft-card-art gft-art--standard" aria-hidden="true">
+        <img class="gft-card-img" loading="lazy"
+             src="assets/images/conceptionboursas.webp"
+             srcset="../assets/images/conceptionboursas.webp 1x, ../assets/images/conceptionboursas.webp 2x"
+             alt="Standard package">
+      </span>
+      <span class="gft-card-label">Standard (Free 0DZD)</span>
+    </button>
+
+    <button class="gft-card gft-card--premium" role="radio" aria-checked="false" data-value="premium">
+      <span class="gft-card-art gft-art--premium" aria-hidden="true">
+        <img class="gft-card-img" loading="lazy"
+             src="assets/images/conceptionpolymost.webp"
+             srcset="../assets/images/conceptionpolymost.webp 1x, ../assets/images/conceptionpolymost.webp 2x"
+             alt="Premium package black & gold">
+      </span>
+      <span class="gft-card-badge">+3500 DZD</span>
+      <span class="gft-card-label">Premium</span>
+    </button>
+  </div>
+
+  <div class="gft-explain gft-explain--cols">
+    <div class="gft-explain-box">
+      <h3>Standard (Included)</h3>
+      <ul class="gft-list">
+        <li>Based on optimised templates.</li>
+        <li>We adapt your logo, colours and info.</li>
+        <li>Print-ready output.</li>
+      </ul>
+    </div>
+    <div class="gft-explain-box gft-explain-box--premium">
+      <h3>Premium (+3500 DZD)</h3>
+      <ul class="gft-list">
+        <li><strong>Black & Gold</strong> art direction (textures, metallic accents, depth).</li>
+        <li>Custom layouts tailored to your visuals/products.</li>
+        <li>High-end finishing & micro-details.</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<!-- STEP 5: Logo -->
+<section class="gft-step" data-step-key="logoOption" data-step-index="4" aria-label="Logo">
+  <div class="gft-step-head">
+    <h2>Logo</h2>
+    <p>Tell us how you’d like to handle your logo.</p>
+    <div class="gft-help">
+      <strong>Clear & simple:</strong>
+      <ul>
+        <li><em>I have a high-quality vector logo</em> (AI or SVG). We’ll use it as is.</li>
+        <li><em>I need a clean redraw</em> (exact same logo) — you get the AI & exports for <strong>2000 DZD</strong>.</li>
+      </ul>
+    </div>
+  </div>
+  <div class="gft-grid">
+    <button class="gft-card" role="radio" aria-checked="false" data-value="have_ai">
+      <span class="gft-card-art gft-art--logo-ready" aria-hidden="true">
+        <img class="gft-card-img" loading="lazy"
+             src="/assets/personalise/logo-ready.png"
+             srcset="/assets/personalise/logo-ready.png 1x, /assets/personalise/logo-ready@2x.png 2x"
+             alt="Vector logo ready">
+      </span>
+      <span class="gft-card-label">AI / SVG provided</span>
+    </button>
+
+    <button class="gft-card" role="radio" aria-checked="false" data-value="redesign_2000">
+      <span class="gft-card-art gft-art--logo-redraw" aria-hidden="true">
+        <img class="gft-card-img" loading="lazy"
+             src="/assets/personalise/logo-redraw.png"
+             srcset="/assets/personalise/logo-redraw.png 1x, /assets/personalise/logo-redraw@2x.png 2x"
+             alt="Logo redraw service">
+      </span>
+      <span class="gft-card-badge">+2000 DZD</span>
+      <span class="gft-card-label">Redraw my logo</span>
+    </button>
+  </div>
+</section>
+
+          <!-- STEP 6: Invoicing -->
+          <section class="gft-step" data-step-key="invoiceType" data-step-index="5" aria-label="Invoicing">
+            <div class="gft-step-head">
+              <h2>Invoicing</h2>
+              <p>Choose how you would like your invoice.</p>
+            </div>
+            <div class="gft-grid">
+              <button class="gft-card" role="radio" aria-checked="false" data-value="none">
+                <span class="gft-card-art gft-art--inv-none" aria-hidden="true"></span>
+                <span class="gft-card-label">No invoice</span>
+              </button>
+              <button class="gft-card" role="radio" aria-checked="false" data-value="mokawil">
+                <span class="gft-card-art gft-art--inv-mokawil" aria-hidden="true"></span>
+                <span class="gft-card-label">Mokawil Dati</span>
+              </button>
+              <button class="gft-card" role="radio" aria-checked="false" data-value="standard">
+                <span class="gft-card-art gft-art--inv-standard" aria-hidden="true"></span>
+                <span class="gft-card-label">Standard</span>
+              </button>
+            </div>
+
+            <div class="gft-explain gft-explain--cols">
+              <div class="gft-explain-box">
+                <h3>No invoice (0%)</h3>
+                <p>No accounting document. Ideal for personal or gift orders.</p>
+              </div>
+              <div class="gft-explain-box">
+                <h3>Mokawil Dati (+0.5%)</h3>
+                <p>Simplified format compatible with <strong>Mokawil Dati</strong> card; accepted as proof of purchase for some professional uses.</p>
+              </div>
+              <div class="gft-explain-box">
+                <h3>Standard invoice (+10%)</h3>
+                <p>Full invoice with company details. <em>VAT not applicable</em> — نحن لا نخضع لنظام ضريبة القيمة المضافة.</p>
+              </div>
+            </div>
+          </section>
+        </div>
+
+        <!-- Bottom Nav (kept for your JS) -->
+        <nav class="gft-nav" aria-label="Step navigation">
+          <button id="gftPrev" class="gft-btn ghost" type="button" aria-label="Previous step">Previous</button>
+          <button id="gftNext" class="gft-btn" type="button" aria-label="Next step" disabled>Next</button>
+        </nav>
+      </section>
+
+    </div>
+  </div>
+
+  <!-- Page JS -->
+  <script src="assets/js/personalisation.js"></script>
+</body>
+</html>
