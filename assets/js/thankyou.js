@@ -12,6 +12,26 @@
 window.jsPDF = window.jspdf.jsPDF;
 try { emailjs.init("AUKVraZwu5iufPOe7"); } catch (_) {}
 
+async function ensureEmailJSReady(){
+  if (window.emailjs && typeof emailjs.send === 'function') {
+    try { emailjs.init("AUKVraZwu5iufPOe7"); } catch(_) {}
+    return true;
+  }
+  try {
+    await new Promise((resolve,reject)=>{
+      const s=document.createElement('script');
+      s.src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js";
+      s.onload=resolve; s.onerror=reject; document.head.appendChild(s);
+    });
+    emailjs.init("AUKVraZwu5iufPOe7");
+    return true;
+  } catch(err){
+    console.error('EmailJS load/init failed:', err);
+    return false;
+  }
+}
+
+
 /* tokens + utils */
 const BRAND_NAME = "Giftorea B2B";
 const CONTACT_EMAIL = "contact@giftoreab2b.com";
@@ -82,51 +102,57 @@ async function uploadInvoiceToWP(pdfBlob, filename){
 }
 
 /* Email (HTML body + attachment + invoice_url) */
-async function sendOrderEmail(orderData, invoiceNumber=null, pdfBase64=null, invoiceUrl=null){
+async function sendOrderEmail(orderData, invoiceNumber=null, pdfBase64=null){
   try{
-    const c = orderData.customerInfo || {};
-    const od = orderData.orderDetails || {};
-    const rows = (od.products||[]).map(p=>{
-      const q = Number(p.quantity ?? p.qty ?? 0);
-      const price = Number(p.price||0);
-      const total = (p.totalPrice!=null)?Number(p.totalPrice):(price*q);
-      return `<tr>
-        <td style="padding:6px 8px;border-bottom:1px solid #eee">${esc(p.name||'')}</td>
-        <td style="padding:6px 8px;text-align:center;border-bottom:1px solid #eee">${q}</td>
-        <td style="padding:6px 8px;text-align:right;border-bottom:1px solid #eee">${(total||0).toLocaleString('en-US')} DZD</td>
-      </tr>`;
-    }).join('');
-    const html = `
-      <div style="max-width:680px;margin:0 auto;padding:16px;background:#f6f9ff;border:1px solid #e5edff;border-radius:14px">
-        <h3 style="margin:0 0 6px 0;font:700 16px ui-sans-serif">Nouvelle facture #${esc(invoiceNumber||'')}</h3>
-        <div style="font:400 13px ui-sans-serif">
-          <div><strong>Entreprise:</strong> ${esc(c.company||'-')}</div>
-          <div><strong>Nom:</strong> ${esc(c.name||'-')}</div>
-          <div><strong>Téléphone:</strong> ${esc(c.phone||'-')}</div>
-          <div><strong>Email:</strong> ${esc(c.email||'-')}</div>
-        </div>
-        <table style="width:100%;margin-top:10px;border-collapse:collapse;font:400 13px ui-sans-serif">
-          <thead><tr><th style="text-align:left;border-bottom:1px solid #e5e7eb;padding:6px 8px">Désignation</th><th style="text-align:center;border-bottom:1px solid #e5e7eb;padding:6px 8px">Qté</th><th style="text-align:right;border-bottom:1px solid #e5e7eb;padding:6px 8px">Total</th></tr></thead>
-          <tbody>${rows}</tbody>
-        </table>
-        ${invoiceUrl ? `<div style="margin-top:10px">🔗 <a href="${esc(invoiceUrl)}" target="_blank">Ouvrir la facture en ligne</a></div>` : ''}
-      </div>`;
+    const ready = await ensureEmailJSReady();
+    if(!ready) { console.error('EmailJS not ready'); return; }
 
-    const params = {
+    const c = orderData.customerInfo || {};
+    let messageBody;
+    if(orderData.source === 'custom'){
+      const itemsHTML = itemsTable(orderData.orderDetails?.products, orderData.orderDetails?.globalTotal);
+      const inner = `${clientBlock(c)}${itemsHTML}
+        <div style="margin-top:16px;text-align:right;">
+          <a href="tel:${esc(c.phone)}" style="display:inline-block;background:#111827;color:#fff;text-decoration:none;padding:10px 14px;border-radius:10px;font:600 13px -apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Arial;">Appeler le client</a>
+        </div>`;
+      messageBody = emailShell(inner);
+    } else if(orderData.source === 'ready-pack'){
+      const packHTML = packTable(orderData.packInfo || {});
+      const inner = `${clientBlock(c)}${packHTML}
+        <div style="margin-top:16px;text-align:right;">
+          <a href="tel:${esc(c.phone)}" style="display:inline-block;background:#111827;color:#fff;text-decoration:none;padding:10px 14px;border-radius:10px;font:600 13px -apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Arial;">Appeler le client</a>
+        </div>`;
+      messageBody = emailShell(inner);
+    }
+
+    const emailParams = {
       to_name: c.company || '',
       from_name: 'Giftorea B2B',
-      message: html,
-      message_html: html,
-      html: html,
-      content: html
+      invoice_number: invoiceNumber || '',
+      // send body in multiple fields so the template never renders empty
+      message: messageBody,
+      message_html: messageBody,
+      html: messageBody,
+      content: messageBody
     };
-    if (invoiceNumber) params.invoice_number = invoiceNumber;
-    if (invoiceUrl)    params.invoice_url    = invoiceUrl;
-    if (pdfBase64)     params.pdf_file       = pdfBase64;
 
-    await emailjs.send('service_chey66l','template_fuau9gh', params);
-  }catch(_){}
+    // keep your existing attachment param (if your template has a File var named "pdf_file")
+    if (pdfBase64) {
+      emailParams.pdf_file = pdfBase64;
+      // optional: EmailJS attachments array (works even if the template doesn’t define a File var)
+      emailParams.attachments = [{
+        name: `Facture-Giftorea-${invoiceNumber||'commande'}.pdf`,
+        data: pdfBase64
+      }];
+    }
+
+    await emailjs.send('service_chey66l', 'template_fuau9gh', emailParams);
+    console.log('Email sent successfully');
+  }catch(err){
+    console.error('Email sending error:', err);
+  }
 }
+
 
 /* id fallback */
 function localDailyId(){

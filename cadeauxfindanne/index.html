@@ -8,7 +8,31 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no">	
 <title>Giftorea</title>
 <!--css-->				
-<link rel="stylesheet" href="assets/css/cadeauxfindanne.css">
+<link rel="stylesheet" href="../assets/css/cadeauxfindanne.css">
+<link rel="preload" as="image"
+      href="../assets/images/bannerli3batounadesktop.webp"
+      media="(min-width: 769px)" imagesizes="100vw">
+
+<link rel="preload" as="image"
+      href="../assets/images/bannerli3batounamobile.webp"
+      media="(max-width: 768px)" imagesizes="100vw">
+      <!-- Hero gallery: preload all images -->
+<link rel="preload" as="image" href="../assets/images/webnumber1.webp" imagesizes="(max-width:768px) 80vw, 420px">
+<link rel="preload" as="image" href="../assets/images/webnumber2.webp" imagesizes="(max-width:768px) 80vw, 420px">
+<link rel="preload" as="image" href="../assets/images/webnumber3.webp" imagesizes="(max-width:768px) 80vw, 420px">
+<link rel="preload" as="image" href="../assets/images/webnumber4.webp" imagesizes="(max-width:768px) 80vw, 420px">
+
+<link rel="preload" as="image" href="../assets/images/pack01starter.webp">
+<link rel="preload" as="image" href="../assets/images/pack02standard.webp">
+<link rel="preload" as="image" href="../assets/images/pack03economic.webp">
+<link rel="preload" as="image" href="../assets/images/pack04professional.webp">
+<link rel="preload" as="image" href="../assets/images/pack05executive.webp">
+<link rel="preload" as="image" href="../assets/images/starter.webp">
+<link rel="preload" as="image" href="../assets/images/standard.webp">
+<link rel="preload" as="image" href="../assets/images/economic.webp">
+<link rel="preload" as="image" href="../assets/images/professional.webp">
+<link rel="preload" as="image" href="../assets/images/executive.webp">
+
 </head>
 <body id="main">
 <!-- === Fixed Global Background (Mesh + Blobs + Rays) === -->
@@ -53,22 +77,26 @@
   <!-- Marquee 2 — BOTTOM (CSS direction: right) -->
   <section id="gftMarquee2" class="gft-marquee dir-right" data-speed="90">
     <div class="gft-marquee__track" aria-live="polite">
-      <span class="gft-marquee__item">🔥 Remises Fin d’Année</span>
-      <span class="gft-marquee__item">-15% sur packs sélectionnés</span>
-      <span class="gft-marquee__item">⏱️ Délais express disponibles</span>
-      <span class="gft-marquee__item">📦 Coffrets prêts à offrir</span>
+      <span class="gft-marquee__item">🔥 Réductions et tarifs spéciaux jusqu'au 30 novembre 2025</span>
+      <span class="gft-marquee__item">🔥 خصومات وأسعار خاصة حتى 30 نوفمبر 2025</span>
+      <span class="gft-marquee__item">Avez-vous déjà travaillé avec nous ? Profitez de réductions et d’un traitement VIP réservé à nos anciens et fidèles clients </span>
+      <span class="gft-marquee__item">هل سبق وتعاملت معنا؟ استفد من تخفيضات ,ومعاملة استثنائية خاصة بالزبائن القدماء والأوفياء</span>
     </div>
   </section>
 </div>
 
   <div class="container-xl">
 <div class="banner-container">
-        <picture>
-            <source media="(max-width: 768px)" srcset="../assets/images/bannerli3batounamobile.webp">
-            <source media="(min-width: 769px)" srcset="../assets/images/bannerli3batounadesktop.webp">
-            <img src="assets/images/bannerli3batounadesktop.webp" alt="Banner">
-        </picture>
-    </div>
+  <picture>
+    <source type="image/webp" media="(max-width: 768px)"
+            srcset="../assets/images/bannerli3batounamobile.webp" sizes="100vw">
+    <source type="image/webp" media="(min-width: 769px)"
+            srcset="../assets/images/bannerli3batounadesktop.webp" sizes="100vw">
+    <img class="no-lazy" fetchpriority="high"
+         src="../assets/images/bannerli3batounadesktop.webp"
+         alt="هدایـا نهاية السنة للشركات — عروض مخصصة مع شعار شركتك">
+  </picture>
+</div>
 
 <section class="gft-hero-content" id="gft-hero-content">
   <h1> استمتع بتجربة استثنائية مع Giftorea 🎉</h1>
@@ -93,77 +121,89 @@
 
 </section>
 
- <div class="gallery-container">
-        <div class="gallery-item">
-            <img src="assets/images/webnumber1.webp" alt="Image 1">
-        </div>
-        <div class="gallery-item">
-            <img src="assets/images/webnumber2.webp" alt="Image 2">
-        </div>
-        <div class="gallery-item">
-            <img src="assets/images/webnumber3.webp" alt="Image 3">
-        </div>
-        <div class="gallery-item">
-            <img src="assets/images/webnumber4.webp" alt="Image 4">
-        </div>
-    </div>
+<div class="gallery-container" aria-label="Aperçu des réalisations">
+  <div class="gallery-item">
+    <img
+      src="../assets/images/webnumber1.webp"
+      alt="Image 1"
+      width="1200" height="675"
+      fetchpriority="high" decoding="async">
+  </div>
+  <div class="gallery-item">
+    <img
+      src="../assets/images/webnumber2.webp"
+      alt="Image 2"
+      width="1200" height="675"
+      fetchpriority="high" decoding="async">
+  </div>
+  <div class="gallery-item">
+    <img
+      src="../assets/images/webnumber3.webp"
+      alt="Image 3"
+      width="1200" height="675"
+      fetchpriority="high" decoding="async">
+  </div>
+  <div class="gallery-item">
+    <img
+      src="../assets/images/webnumber4.webp"
+      alt="Image 4"
+      width="1200" height="675"
+      fetchpriority="high" decoding="async">
+  </div>
+</div>
 
-    <!-- SLIDERRRRRRR ----  -->
-     <h2 class="gft-sec-title">🪄 Composez Votre Commande !</h2>
- <div class="slider-container">
+   <h2 class="gft-sec-title">🔍 Découvrez nos packs !</h2>
+
+<div class="slider-container">
         <div class="slider-wrapper">
             <!-- Slide 1 -->
             <div class="slide">
                 <a href="https://example.com/offer1" target="_blank">
-                    <img class="desktop-img" src="assets/images/pack01starter.webp" alt="Pack Starter Desktop">
-                    <img class="mobile-img" src="assets/images/pack01starter.webp" alt="Pack Starter Mobile">
+                    <img class="desktop-img" src="../assets/images/pack01starter.webp" alt="Pack Starter Desktop">
+                    <img class="mobile-img" src="../assets/images/starter.webp" alt="Pack Starter Mobile">
                 </a>
             </div>
             
             <!-- Slide 2 -->
             <div class="slide">
                 <a href="https://example.com/offer2" target="_blank">
-                    <img class="desktop-img" src="assets/images/pack02standard.webp" alt="Pack Standard Desktop">
-                    <img class="mobile-img" src="assets/images/pack02standard.webp" alt="Pack Standard Mobile">
+                    <img class="desktop-img" src="../assets/images/pack02standard.webp" alt="Pack Standard Desktop">
+                    <img class="mobile-img" src="../assets/images/standard.webp" alt="Pack Standard Mobile">
                 </a>
             </div>
             
             <!-- Slide 3 -->
             <div class="slide">
                 <a href="https://example.com/offer3" target="_blank">
-                    <img class="desktop-img" src="assets/images/pack03economic.webp" alt="Pack Economic Desktop">
-                    <img class="mobile-img" src="assets/images/pack03economic.webp" alt="Pack Economic Mobile">
+                    <img class="desktop-img" src="../assets/images/pack03economic.webp" alt="Pack Economic Desktop">
+                    <img class="mobile-img" src="../assets/images/economic.webp" alt="Pack Economic Mobile">
                 </a>
             </div>
 
             <!-- Slide 4 -->
             <div class="slide">
                 <a href="https://example.com/offer4" target="_blank">
-                    <img class="desktop-img" src="assets/images/pack04professional.webp" alt="Pack Professional Desktop">
-                    <img class="mobile-img" src="assets/images/pack04professional.webp" alt="Pack Professional Mobile">
+                    <img class="desktop-img" src="../assets/images/pack04professional.webp" alt="Pack Professional Desktop">
+                    <img class="mobile-img" src="../assets/images/professional.webp" alt="Pack Professional Mobile">
                 </a>
             </div>
 
             <!-- Slide 5 -->
             <div class="slide">
                 <a href="https://example.com/offer4" target="_blank">
-                    <img class="desktop-img" src="assets/images/pack05executive.webp" alt="Pack Professional Desktop">
-                    <img class="mobile-img" src="assets/images/pack05executive.webp" alt="Pack Professional Mobile">
+                    <img class="desktop-img" src="../assets/images/pack05executive.webp" alt="Pack Professional Desktop">
+                    <img class="mobile-img" src="../assets/images/executive.webp" alt="Pack Professional Mobile">
                 </a>
             </div>
             
         </div>
 
-        <!-- Navigation Arrows -->
-        <button class="slider-btn prev" onclick="changeSlide(-1)">‹</button>
-        <button class="slider-btn next" onclick="changeSlide(1)">›</button>
+  <button class="slider-btn prev">‹</button>
+<button class="slider-btn next">›</button>
+  <a href="https://example.com/main-offer" target="_blank" class="cta-button">Voir l'offre</a>
+  <div class="dots"></div>
+</div>
 
-        <!-- CTA Button -->
-        <a href="https://example.com/main-offer" target="_blank" class="cta-button">Voir l'offre</a>
-
-        <!-- Dots Container (auto-generated) -->
-        <div class="dots"></div>
-    </div>
 
 <section class="gft-industries" id="gft-industries" aria-label="Par Secteur">
   <h2 class="gft-sec-title gft-title-glass">🔍 Découvrez les offres par domaine !</h2>
@@ -228,7 +268,7 @@
         Agendas
 ========================= -->
 
-<details class="gft-cat" open>
+ <details class="gft-cat cat--first" open>
   <summary>📘 Agendas</summary>
   <div class="gft-cards">
 
@@ -244,12 +284,12 @@
     ]'>
 
     <div class="gft-media">
-      <img src="assets/images/productimages/agendapersonalisee.webp" alt="Agenda 100% personalisee">
+      <img src="../assets/images/productimages/agendapersonalisee.webp" alt="Agenda 100% personalisee" loading="lazy" decoding="async">
       <button type="button" class="gft-view" data-view="ag1">View</button>
 
       <div class="gft-gallery" hidden>
-        <img data-gal-src="assets/images/productimages/agendapersonalisee.webp" alt="">
-        <img data-gal-src="assets/images/productimages/agendapersonaliserpages.webp" alt="">
+        <img data-gal-src="../assets/images/productimages/agendapersonalisee.webp" alt=""loading="lazy" decoding="async">
+        <img data-gal-src="../assets/images/productimages/agendapersonaliserpages.webp" alt=""loading="lazy" decoding="async">
         <div class="gft-desc" hidden>We will add description later</div>
       </div>
     </div>
@@ -288,18 +328,18 @@
     ]'>
 
     <div class="gft-media">
-      <img src="assets/images/productimages/agenda.webp" alt="Agenda 2">
+      <img src="../assets/images/productimages/agenda.webp" alt="Agenda 1" loading="lazy" decoding="async">
       <button type="button" class="gft-view" data-view="ag2">View</button>
 
       <div class="gft-gallery" hidden>
-        <img data-gal-src="assets/images/productimages/agenda.webp" alt="">
-<img data-gal-src="assets/images/productsgallery/edeaa08d-8adb-4b17-9ec5-660f33c7fdde.jpeg" alt="">
-<img data-gal-src="assets/images/productsgallery/3850838a-f932-419f-a2f2-29399661596a.jpeg" alt="">
-<img data-gal-src="assets/images/productsgallery/54d78870-4be4-4d54-9556-2510b1f7bec4.jpeg" alt="">
-<img data-gal-src="assets/images/productsgallery/80e514b6-c01a-495d-9615-981637bed346.jpeg" alt="">
-<img data-gal-src="assets/images/productsgallery/WhatsApp Image 2025-11-09 at 11.13.08 AM.jpeg" alt="">
-<img data-gal-src="assets/images/productsgallery/483d8a87-b7f8-42bb-bca5-82a6a0bdacd4.jpeg" alt="">
-<img data-gal-src="assets/images/productsgallery/720539d8-4723-43bd-859a-b92543c925c5.jpeg" alt="">
+        <img data-gal-src="../assets/images/productimages/agenda.webp" alt="" loading="lazy" decoding="async">
+<img data-gal-src="../assets/images/productsgallery/edeaa08d-8adb-4b17-9ec5-660f33c7fdde.jpeg" alt="" loading="lazy" decoding="async">
+<img data-gal-src="../assets/images/productsgallery/3850838a-f932-419f-a2f2-29399661596a.jpeg" alt="" loading="lazy" decoding="async">
+<img data-gal-src="../assets/images/productsgallery/54d78870-4be4-4d54-9556-2510b1f7bec4.jpeg" alt="" loading="lazy" decoding="async">
+<img data-gal-src="../assets/images/productsgallery/80e514b6-c01a-495d-9615-981637bed346.jpeg" alt="" loading="lazy" decoding="async">
+<img data-gal-src="../assets/images/productsgallery/WhatsApp Image 2025-11-09 at 11.13.08 AM.jpeg" alt="" loading="lazy" decoding="async">
+<img data-gal-src="../assets/images/productsgallery/483d8a87-b7f8-42bb-bca5-82a6a0bdacd4.jpeg" alt="" loading="lazy" decoding="async">
+<img data-gal-src="../assets/images/productsgallery/720539d8-4723-43bd-859a-b92543c925c5.jpeg" alt="" loading="lazy" decoding="async">
 
         <div class="gft-desc" hidden>We will add description later</div>
       </div>
@@ -315,7 +355,7 @@
       <div class="gft-row">
         <div class="gft-stepper">
           <button type="button" data-action="dec" data-id="ag2">−</button>
-          <input type="number" min="0" step="5" value="0" data-id="ag2">
+          <input type="number" min="0" step="1" value="0" data-id="ag2">
           <button type="button" data-action="inc" data-id="ag2">+</button>
         </div>
       </div>
@@ -328,7 +368,7 @@
   <!-- ========================================= -->
   <!-- ag3 -->
   <!-- ========================================= -->
-  <article class="gft-card" data-id="ag3" data-moq="15" data-step="5"
+  <article class="gft-card" data-id="ag3" data-moq="5" data-step="1"
    data-tier='[
       {"minQty":500,"unitPrice":875},
       {"minQty":200,"unitPrice":950},
@@ -339,11 +379,11 @@
     ]'>
 
     <div class="gft-media">
-      <img src="assets/images/productimages/agenda2.webp" alt="Agenda 2">
+      <img src="../assets/images/productimages/agenda2.webp" alt="Agenda 2">
       <button type="button" class="gft-view" data-view="ag3">View</button>
 
       <div class="gft-gallery" hidden>
-        <img data-gal-src="assets/images/productimages/agenda2.webp" alt="">
+        <img data-gal-src="../assets/images/productimages/agenda2.webp" alt="">
         <div class="gft-desc" hidden>We will add description later</div>
       </div>
     </div>
@@ -358,8 +398,51 @@
       <div class="gft-row">
         <div class="gft-stepper">
           <button type="button" data-action="dec" data-id="ag3">−</button>
-          <input type="number" min="0" step="5" value="0" data-id="ag3">
+          <input type="number" min="0" step="1" value="0" data-id="ag3">
           <button type="button" data-action="inc" data-id="ag3">+</button>
+        </div>
+      </div>
+
+      <div class="gft-total">Total: 0 DZD</div>
+    </div>
+  </article>
+
+   <!-- ========================================= -->
+  <!-- ag4 -->
+  <!-- ========================================= -->
+  <article class="gft-card" data-id="ag4" data-moq="10" data-step="1"
+   data-tier='[
+      {"minQty":500,"unitPrice":990},
+      {"minQty":200,"unitPrice":1150},
+      {"minQty":100,"unitPrice":1250},
+      {"minQty":50,"unitPrice":1350},
+      {"minQty":10,"unitPrice":1500}
+    ]'>
+
+    <div class="gft-media">
+      <img src="../assets/images/productimages/agendagold.webp" alt="Agenda VIP">
+      <button type="button" class="gft-view" data-view="ag4">View</button>
+
+      <div class="gft-gallery" hidden>
+        <img data-gal-src="../assets/images/productimages/agendagold.webp" alt="Agenda VIP">
+        <div class="gft-desc" hidden>
+        Impression or ou argent si logo simple
+      طباعة ذهبية أو فضية فقط إذا كان الشعار بسيطًا ولا يحتوي على الكثير من التفاصيل الصغيرة</div>
+      </div>
+    </div>
+
+    <div class="gft-body">
+      <h3 class="gft-name">Agenda VIP</h3>
+      <div class="gft-meta">
+        <div class="gft-range"></div>
+        <div class="gft-moq"></div>
+      </div>
+
+      <div class="gft-row">
+        <div class="gft-stepper">
+          <button type="button" data-action="dec" data-id="ag4">−</button>
+          <input type="number" min="0" step="1" value="0" data-id="ag4">
+          <button type="button" data-action="inc" data-id="ag4">+</button>
         </div>
       </div>
 
@@ -370,7 +453,7 @@
   </div>
 </details>
 
-<details class="gft-cat" open>
+<details class="gft-cat">
   <summary>📅 Calendriers</summary>
   <div class="gft-cards">
 
@@ -393,10 +476,10 @@
   <span class="recommended-text">Recommandé</span>
 </div>
       <div class="gft-media">
-        <img src="assets/images/productimages/chevaletstandard.webp" alt="Calendrier chevalet Pro">
+        <img src="../assets/images/productimages/chevaletstandard.webp" alt="Calendrier chevalet Pro">
         <button type="button" class="gft-view" data-view="cal1">View</button>
         <div class="gft-gallery" hidden>
-          <img data-gal-src="assets/images/productimages/chevaletstandard.webp" alt="">
+          <img data-gal-src="../assets/images/productimages/chevaletstandard.webp" alt="">
           <div class="gft-desc" hidden>We will add description later</div>
         </div>
       </div>
@@ -439,10 +522,10 @@
 </div>
 
       <div class="gft-media">
-        <img src="assets/images/productimages/chevaletrectangle.webp" alt="Calendrier chevalet Rect">
+        <img src="../assets/images/productimages/chevaletrectangle.webp" alt="Calendrier chevalet Rect">
         <button type="button" class="gft-view" data-view="cal2">View</button>
         <div class="gft-gallery" hidden>
-          <img data-gal-src="assets/images/productimages/chevaletrectangle.webp" alt="">
+          <img data-gal-src="../assets/images/productimages/chevaletrectangle.webp" alt="">
           <div class="gft-desc" hidden>We will add description later</div>
         </div>
       </div>
@@ -478,10 +561,10 @@
       ]'>
 
       <div class="gft-media">
-        <img src="assets/images/productimages/chevalet1page.webp" alt="Calendrier chevalet simple">
+        <img src="../assets/images/productimages/chevalet1page.webp" alt="Calendrier chevalet simple">
         <button type="button" class="gft-view" data-view="cal3">View</button>
         <div class="gft-gallery" hidden>
-          <img data-gal-src="assets/images/productimages/chevalet1page.webp" alt="">
+          <img data-gal-src="../assets/images/productimages/chevalet1page.webp" alt="">
           <div class="gft-desc" hidden>We will add description later</div>
         </div>
       </div>
@@ -517,10 +600,10 @@
       ]'>
 
       <div class="gft-media">
-        <img src="assets/images/productimages/chevaletdecor.webp" alt="Calendrier Chevalet Decor">
+        <img src="../assets/images/productimages/chevaletdecor.webp" alt="Calendrier Chevalet Decor">
         <button type="button" class="gft-view" data-view="cal4">View</button>
         <div class="gft-gallery" hidden>
-          <img data-gal-src="assets/images/productimages/chevaletdecor.webp" alt="">
+          <img data-gal-src="../assets/images/productimages/chevaletdecor.webp" alt="">
          >
           <div class="gft-desc" hidden>We will add description later</div>
         </div>
@@ -557,10 +640,10 @@
       ]'>
 
       <div class="gft-media">
-        <img src="assets/images/productimages/chevaletmini.webp" alt="Calendrier Chevalet mini">
+        <img src="../assets/images/productimages/chevaletmini.webp" alt="Calendrier Chevalet mini">
         <button type="button" class="gft-view" data-view="cal5">View</button>
         <div class="gft-gallery" hidden>
-          <img data-gal-src="assets/images/productimages/chevaletmini.webp" alt="">
+          <img data-gal-src="../assets/images/productimages/chevaletmini.webp" alt="">
           <div class="gft-desc" hidden>We will add description later</div>
         </div>
       </div>
@@ -597,10 +680,10 @@
       ]'>
 
       <div class="gft-media">
-        <img src="assets/images/productimages/mural.webp" alt="Calendrier Mural Standard">
+        <img src="../assets/images/productimages/mural.webp" alt="Calendrier Mural Standard">
         <button type="button" class="gft-view" data-view="cal6">View</button>
         <div class="gft-gallery" hidden>
-          <img data-gal-src="assets/images/productimages/mural.webp" alt="">
+          <img data-gal-src="../assets/images/productimages/mural.webp" alt="">
         
           <div class="gft-desc" hidden>We will add description later</div>
         </div>
@@ -637,11 +720,10 @@
         {"minQty":50,"unitPrice":520}
       ]'>
   <div class="gft-media">
-    <img src="https://giftorea.explovea.com/wp-content/uploads/2025/11/chevalet-standar-2.webp" alt="calendrier mural 12 pages">
+    <img src="../assets/images/productimages/mural12pages.webp" alt="calendrier mural 12 pages">
     <button type="button" class="gft-view" data-view="cal7">View</button>
     <div class="gft-gallery" hidden>
-      <img data-gal-src="https://giftorea.explovea.com/wp-content/uploads/2025/11/chevalet-standar-2.webp" alt="">
-      <img data-gal-src="https://giftorea.explovea.com/wp-content/uploads/2025/11/chevalet-standar-2.webp" alt="">
+      <img data-gal-src="../assets/images/productimages/mural12pages.webp" alt="">
       <div class="gft-desc" hidden>We will add description later</div>
     </div>
   </div>
@@ -677,11 +759,10 @@
         {"minQty":50,"unitPrice":450}
       ]'>
   <div class="gft-media">
-    <img src="https://giftorea.explovea.com/wp-content/uploads/2025/11/chevalet-standar-2.webp" alt="calendrier mural 06 pages">
+    <img src="../assets/images/productimages/mural6pages.webp" alt="calendrier mural 06 pages">
     <button type="button" class="gft-view" data-view="cal8">View</button>
     <div class="gft-gallery" hidden>
-      <img data-gal-src="https://giftorea.explovea.com/wp-content/uploads/2025/11/chevalet-standar-2.webp" alt="">
-      <img data-gal-src="https://giftorea.explovea.com/wp-content/uploads/2025/11/chevalet-standar-2.webp" alt="">
+      <img data-gal-src="../assets/images/productimages/mural6pages.webp" alt="">
       <div class="gft-desc" hidden>We will add description later</div>
     </div>
   </div>
@@ -725,10 +806,10 @@
 </div>
 
   <div class="gft-media">
-    <img src="assets/images/productimages/sousmain1200g.webp" alt="Calendrier Sous-main">
+    <img src="../assets/images/productimages/sousmain1200g.webp" alt="Calendrier Sous-main">
     <button type="button" class="gft-view" data-view="cal9">View</button>
     <div class="gft-gallery" hidden>
-      <img data-gal-src="assets/images/productimages/sousmain1200g.webp" alt="">
+      <img data-gal-src="../assets/images/productimages/sousmain1200g.webp" alt="">
       <div class="gft-desc" hidden>We will add description later</div>
     </div>
   </div>
@@ -766,10 +847,10 @@
         {"minQty":25,"unitPrice":475}
       ]'>
   <div class="gft-media">
-    <img src="assets/images/productimages/sousmainmini.webp" alt="Calendrier Sous-main mini">
+    <img src="../assets/images/productimages/sousmainmini.webp" alt="Calendrier Sous-main mini">
     <button type="button" class="gft-view" data-view="cal10">View</button>
     <div class="gft-gallery" hidden>
-      <img data-gal-src="assets/images/productimages/sousmainmini.webp" alt="">
+      <img data-gal-src="../assets/images/productimages/sousmainmini.webp" alt="">
       <div class="gft-desc" hidden>We will add description later</div>
     </div>
   </div>
@@ -806,10 +887,10 @@
         {"minQty":50,"unitPrice":210}
       ]'>
   <div class="gft-media">
-    <img src="assets/images/productimages/sousmain350g.webp" alt="Calendrier sous main 350g">
+    <img src="../assets/images/productimages/sousmain350g.webp" alt="Calendrier sous main 350g">
     <button type="button" class="gft-view" data-view="cal11">View</button>
     <div class="gft-gallery" hidden>
-      <img data-gal-src="assets/images/productimages/sousmain350g.webp" alt="">
+      <img data-gal-src="../assets/images/productimages/sousmain350g.webp" alt="">
 
       <div class="gft-desc" hidden>We will add description later</div>
     </div>
@@ -855,10 +936,23 @@
       ]'>
 
       <div class="gft-media">
-        <img src="assets/images/productimages/blocnote.webp" alt="Bloc Notes Standard">
+        <img src="../assets/images/productimages/blocnote.webp" alt="Bloc Notes Standard">
         <button type="button" class="gft-view" data-view="bn1">View</button>
         <div class="gft-gallery" hidden>
-          <img data-gal-src="assets/images/productimages/blocnote.webp" alt="">
+          <img data-gal-src="../assets/images/productimages/blocnote.webp" alt="">
+          <img data-gal-src="../assets/images/productsgallery/bloc-noteLUNE-ROUGE-.webp" alt="">
+          <img data-gal-src="../assets/images/productsgallery/bloc-note-marwa-promo.webp" alt="">
+          <img data-gal-src="../assets/images/productsgallery/blocnotes/FB_IMG_1751038453637.jpg" alt="">
+          <img data-gal-src="../assets/images/productsgallery/blocnotes/FB_IMG_1751038456558.jpg" alt="">
+          <img data-gal-src="../assets/images/productsgallery//blocnotes/FB_IMG_1751038542600.jpg" alt="">
+          <img data-gal-src="../assets/images/productsgallery//blocnotes/FB_IMG_1751039036638.jpg" alt="">
+           <img data-gal-src="../assets/images/productsgallery//blocnotes/FB_IMG_1751039050352.jpg" alt="">
+            <img data-gal-src="../assets/images/productsgallery//blocnotes/FB_IMG_1751039056635.jpg" alt="">
+             <img data-gal-src="../assets/images/productsgallery//blocnotes/FB_IMG_1751039069931.jpg" alt="">
+              <img data-gal-src="../assets/images/productsgallery//blocnotes/FB_IMG_1751039080325.jpg" alt="">
+               <img data-gal-src="../assets/images/productsgallery//blocnotes/IMG-20241224-WA0109.jpg" alt="">
+                <img data-gal-src="../assets/images/productsgallery//blocnotes/IMG-20241224-WA0111.jpg" alt="">
+                 <img data-gal-src="../assets/images/productsgallery//blocnotes/IMG-20250122-WA0004.jpg" alt="">
           <div class="gft-desc" hidden>We will add description later.</div>
         </div>
       </div>
@@ -888,10 +982,10 @@
         {"minQty":50,"unitPrice":595}
       ]'>
       <div class="gft-media">
-        <img src="assets/images/productimages/blocnotesvip.webp" alt="Bloc Notes VIP">
+        <img src="../assets/images/productimages/blocnotesvip.webp" alt="Bloc Notes VIP">
         <button type="button" class="gft-view" data-view="bn2">View</button>
         <div class="gft-gallery" hidden>
-          <img data-gal-src="assets/images/productimages/blocnotesvip.webp" alt="">
+          <img data-gal-src="../assets/images/productimages/blocnotesvip.webp" alt="">
           <div class="gft-desc" hidden>we will add description later.</div>
         </div>
       </div>
@@ -920,10 +1014,10 @@
         {"minQty":25,"unitPrice":850}
       ]'>
       <div class="gft-media">
-        <img src="assets/images/productimages/notebook.webp" alt="Notebook – UV/DTF UV">
+        <img src="../assets/images/productimages/notebook.webp" alt="Notebook – UV/DTF UV">
         <button type="button" class="gft-view" data-view="bn3">View</button>
         <div class="gft-gallery" hidden>
-          <img data-gal-src="assets/images/productimages/notebook.webp" alt="">
+          <img data-gal-src="../assets/images/productimages/notebook.webp" alt="">
           <div class="gft-desc" hidden>description will be added later.</div>
         </div>
       </div>
@@ -951,10 +1045,10 @@
         {"minQty":50,"unitPrice":750}
       ]'>
       <div class="gft-media">
-        <img src="assets/images/productimages/notebook.webp" alt="Notebook – sérigraphie">
+        <img src="../assets/images/productimages/notebook.webp" alt="Notebook – sérigraphie">
         <button type="button" class="gft-view" data-view="bn4">View</button>
         <div class="gft-gallery" hidden>
-          <img data-gal-src="assets/images/productimages/notebook.webp" alt="">
+          <img data-gal-src="../assets/images/productimages/notebook.webp" alt="">
           <div class="gft-desc" hidden>description will be added later.</div>
         </div>
       </div>
@@ -986,11 +1080,11 @@
     ]'>
 
     <div class="gft-media">
-      <img src="assets/images/productimages/stylo.webp" alt="Stylo Standard">
+      <img src="../assets/images/productimages/stylostandard.webp" alt="Stylo Standard">
       <button type="button" class="gft-view" data-view="st1">View</button>
 
       <div class="gft-gallery" hidden>
-        <img data-gal-src="assets/images/productimages/stylo.webp" alt="">
+        <img data-gal-src="../assets/images/productimages/stylostandardoo.webp" alt="">
         <div class="gft-desc" hidden>We will add description later</div>
       </div>
     </div>
@@ -1014,27 +1108,27 @@
     </div>
   </article>
 
-  <!-- st2 Stylo model 02 -->
+  <!-- st2 Stylo en bois-->
   <article class="gft-card" data-id="st2" data-moq="60" data-step="60"
      data-tier='[
-      {"minQty":600,"unitPrice":115},
-      {"minQty":300,"unitPrice":117},
-      {"minQty":120,"unitPrice":125},
-      {"minQty":60,"unitPrice":135}
+      {"minQty":600,"unitPrice":165},
+      {"minQty":300,"unitPrice":175},
+      {"minQty":120,"unitPrice":180},
+      {"minQty":60,"unitPrice":190}
     ]'>
 
     <div class="gft-media">
-      <img src="assets/images/productimages/stylo.webp" alt="Stylo model 02">
+      <img src="../assets/images/productimages/styloenbois.webp" alt="Stylo en bois">
       <button type="button" class="gft-view" data-view="st2">View</button>
 
       <div class="gft-gallery" hidden>
-        <img data-gal-src="assets/images/productimages/stylo.webp" alt="">
+        <img data-gal-src="../assets/images/productimages/styloenbois.webp" alt=" Stylo en bois">
         <div class="gft-desc" hidden>We will add description later</div>
       </div>
     </div>
 
     <div class="gft-body">
-      <h3 class="gft-name">Stylo model 02</h3>
+      <h3 class="gft-name">Stylo en bois</h3>
       <div class="gft-meta">
         <div class="gft-range"></div>
         <div class="gft-moq"></div>
@@ -1062,11 +1156,11 @@
     ]'>
 
     <div class="gft-media">
-      <img src="assets/images/productimages/stylo.webp" alt="Stylo Professional">
+      <img src="../assets/images/productimages/stylo.webp" alt="Stylo Professional">
       <button type="button" class="gft-view" data-view="st3">View</button>
 
       <div class="gft-gallery" hidden>
-        <img data-gal-src="assets/images/productimages/stylo.webp" alt="">
+        <img data-gal-src="../assets/images/productimages/stylo.webp" alt="">
         <div class="gft-desc" hidden>We will add description later</div>
       </div>
     </div>
@@ -1090,6 +1184,43 @@
     </div>
   </article>
 
+ <!-- st4 stylo luxury-->
+  <article class="gft-card" data-id="st4" data-moq="5" data-step="1"
+    data-tier='[
+      {"minQty":100,"unitPrice":1000},
+      {"minQty":50,"unitPrice":1150},
+      {"minQty":10,"unitPrice":1250}, 
+      {"minQty":5,"unitPrice":1350}
+    ]'>
+
+    <div class="gft-media">
+      <img src="../assets/images/productimages/styloluxury.webp" alt="Stylo Luxe">
+      <button type="button" class="gft-view" data-view="st4">View</button>
+
+      <div class="gft-gallery" hidden>
+        <img data-gal-src="../assets/images/productimages/styloluxury.webp" alt="">
+        <div class="gft-desc" hidden>We will add description later</div>
+      </div>
+    </div>
+
+    <div class="gft-body">
+      <h3 class="gft-name">Stylo Luxe</h3>
+      <div class="gft-meta">
+        <div class="gft-range"></div>
+        <div class="gft-moq"></div>
+      </div>
+
+      <div class="gft-row">
+        <div class="gft-stepper">
+          <button type="button" data-action="dec" data-id="st4">−</button>
+          <input type="number" min="0" step="5" value="0" data-id="st4">
+          <button type="button" data-action="inc" data-id="st4">+</button>
+        </div>
+      </div>
+
+      <div class="gft-total">Total: 0 DZD</div>
+    </div>
+  </article>
 </div>
 </details>
 <!-- ──────────────────────────────────────────────── -->
@@ -1111,11 +1242,11 @@
     ]'>
 
     <div class="gft-media">
-      <img src="assets/images/productimages/shoppersonalise.webp" alt="Mug Blanc">
+      <img src="../assets/images/productimages/shoppersonalise.webp" alt="Mug Blanc">
       <button type="button" class="gft-view" data-view="go1">View</button>
 
       <div class="gft-gallery" hidden>
-        <img data-gal-src="assets/images/productimages/shoppersonalise.webp" alt="">
+        <img data-gal-src="../assets/images/productimages/shoppersonalise.webp" alt="">
         <div class="gft-desc" hidden>We will add description later</div>
       </div>
     </div>
@@ -1152,11 +1283,11 @@
     ]'>
 
     <div class="gft-media">
-      <img src="assets/images/productimages/gourde.webp" alt="Gourd">
+      <img src="../assets/images/productimages/gourde.webp" alt="Gourd">
       <button type="button" class="gft-view" data-view="go2">View</button>
 
       <div class="gft-gallery" hidden>
-        <img data-gal-src="assets/images/productimages/gourde.webp" alt="">
+        <img data-gal-src="../assets/images/productimages/gourde.webp" alt="">
         <div class="gft-desc" hidden>We will add description later</div>
       </div>
     </div>
@@ -1191,11 +1322,11 @@
     ]'>
 
     <div class="gft-media">
-      <img src="assets/images/productimages/tapisdesourismodel01.webp" alt="Tapis de souris model 1">
+      <img src="../assets/images/productimages/tapisdesourismodel01.webp" alt="Tapis de souris model 1">
       <button type="button" class="gft-view" data-view="go3">View</button>
 
       <div class="gft-gallery" hidden>
-        <img data-gal-src="assets/images/productimages/tapisdesourismodel01.webp" alt="">
+        <img data-gal-src="../assets/images/productimages/tapisdesourismodel01.webp" alt="">
         <div class="gft-desc" hidden>We will add description later</div>
       </div>
     </div>
@@ -1232,11 +1363,11 @@
     ]'>
 
     <div class="gft-media">
-      <img src="assets/images/productimages/tapisdesouris.webp" alt="tapis de souris model Caré">
+      <img src="../assets/images/productimages/tapisdesouris.webp" alt="tapis de souris model Caré">
       <button type="button" class="gft-view" data-view="go4">View</button>
 
       <div class="gft-gallery" hidden>
-        <img data-gal-src="assets/images/productimages/tapisdesouris.webp" alt="">
+        <img data-gal-src="../assets/images/productimages/tapisdesouris.webp" alt="">
         <div class="gft-desc" hidden>We will add description later</div>
       </div>
     </div>
@@ -1271,11 +1402,11 @@
     ]'>
 
     <div class="gft-media">
-      <img src="assets/images/productimages/portecle.webp" alt="Porte clé métal avec résine – RV">
+      <img src="../assets/images/productimages/portecle.webp" alt="Porte clé métal avec résine – RV">
       <button type="button" class="gft-view" data-view="go5">View</button>
 
       <div class="gft-gallery" hidden>
-        <img data-gal-src="assets/images/productimages/portecle.webp" alt="">
+        <img data-gal-src="../assets/images/productimages/portecle.webp" alt="">
         <div class="gft-desc" hidden>We will add description later</div>
       </div>
     </div>
@@ -1309,11 +1440,11 @@
     ]'>
 
     <div class="gft-media">
-      <img src="assets/images/productimages/portecle.webp" alt="Porte clé métal avec résine – R ">
+      <img src="../assets/images/productimages/portecle.webp" alt="Porte clé métal avec résine – R ">
       <button type="button" class="gft-view" data-view="go6">View</button>
 
       <div class="gft-gallery" hidden>
-        <img data-gal-src="assets/images/productimages/portecle.webp" alt="">
+        <img data-gal-src="../assets/images/productimages/portecle.webp" alt="">
         <div class="gft-desc" hidden>We will add description later</div>
       </div>
     </div>
@@ -1347,12 +1478,11 @@
     ]'>
 
     <div class="gft-media">
-      <img src="https://giftorea.explovea.com/wp-content/uploads/2025/11/chevalet-standar-2.webp" alt="flash disk en Metal 8G">
+      <img src="../assets/images/productimages/usbmetal.webp" alt="flash disk en Metal 8G">
       <button type="button" class="gft-view" data-view="go7">View</button>
 
       <div class="gft-gallery" hidden>
-        <img data-gal-src="https://giftorea.explovea.com/wp-content/uploads/2025/11/chevalet-standar-2.webp" alt="">
-        <img data-gal-src="https://giftorea.explovea.com/wp-content/uploads/2025/11/chevalet-standar-2.webp" alt="">
+        <img data-gal-src="../assets/images/productimages/usbmetal.webp" alt="">
         <div class="gft-desc" hidden>We will add description later</div>
       </div>
     </div>
@@ -1386,7 +1516,7 @@
     ]'>
 
     <div class="gft-media">
-      <img src="https://giftorea.explovea.com/wp-content/uploads/2025/11/chevalet-standar-2.webp" alt="flash disk en bois 8G">
+      <img src="../assets/images/productimages/usbwood.webp" alt="flash disk en bois 8G">
       <button type="button" class="gft-view" data-view="go8">View</button>
 
       <div class="gft-gallery" hidden>
@@ -1426,29 +1556,35 @@
       
   <!-- ════════════════════════════════════════════════ -->
   <!-- cf1 --> 
-  <article class="gft-card" data-id="cf1" data-moq="15" data-step="5"
+  <article class="gft-card" data-id="cf1" data-moq="5" data-step="1"
     data-tier='[
-      {"minQty":500,"unitPrice":100},
-      {"minQty":200,"unitPrice":110},
       {"minQty":100,"unitPrice":120},
       {"minQty":50,"unitPrice":130},
       {"minQty":25,"unitPrice":140},
-      {"minQty":15,"unitPrice":150}
+      {"minQty":5,"unitPrice":150}
     ]'>
 
     <div class="gft-media">
-      <img src="https://giftorea.explovea.com/wp-content/uploads/2025/11/chevalet-standar-2.webp" alt="Product Name">
+      <img src="../assets/images/productimages/coffret01.webp" alt="Coffret 01">
       <button type="button" class="gft-view" data-view="cf1">View</button>
 
       <div class="gft-gallery" hidden>
-        <img data-gal-src="https://giftorea.explovea.com/wp-content/uploads/2025/11/chevalet-standar-2.webp" alt="">
-        <img data-gal-src="https://giftorea.explovea.com/wp-content/uploads/2025/11/chevalet-standar-2.webp" alt="">
-        <div class="gft-desc" hidden>We will add description later</div>
+        <img data-gal-src="../assets/images/productimages/coffret01.webp" alt="Coffret 01">
+        <div class="gft-desc" hidden>
+          FR: 
+          Contenu : stylo métal tactile, carnet A5, porte-clés métallique. 
+          Couleurs : blanc, bleu marine, rouge, vert (pas de noir pour ce modèle). 
+          Marquage : UV, UV DTF, ou Flex (doré/argenté si le logo est simple).
+AR: المحتوى: 
+قلم معدني لمسي، دفتر A5، سلسلة مفاتيح معدنية. 
+الألوان: أبيض، أزرق داكن، أحمر، أخضر (لا يوجد أسود في هذا الموديل). 
+الطباعة: UV أو UV DTF أو فليكس (ذهبي/فضي إذا كان الشعار بسيطًا).
+        </div>
       </div>
     </div>
 
     <div class="gft-body">
-      <h3 class="gft-name">Product Name</h3>
+      <h3 class="gft-name">Coffret 01</h3>
       <div class="gft-meta">
         <div class="gft-range"></div>
         <div class="gft-moq"></div>
@@ -1468,29 +1604,35 @@
   <!-- ════════════════════════════════════════════════ -->
 
   <!-- cf2 -->
-  <article class="gft-card" data-id="cf2" data-moq="15" data-step="5"
+  <article class="gft-card" data-id="cf2" data-moq="5" data-step="1"
     data-tier='[
-      {"minQty":500,"unitPrice":100},
-      {"minQty":200,"unitPrice":110},
       {"minQty":100,"unitPrice":120},
       {"minQty":50,"unitPrice":130},
       {"minQty":25,"unitPrice":140},
-      {"minQty":15,"unitPrice":150}
+      {"minQty":5,"unitPrice":150}
     ]'>
 
     <div class="gft-media">
-      <img src="https://giftorea.explovea.com/wp-content/uploads/2025/11/chevalet-standar-2.webp" alt="Product Name">
+      <img src="../assets/images/productimages/coffret02.webp" alt="Coffret 02">
       <button type="button" class="gft-view" data-view="cf2">View</button>
 
       <div class="gft-gallery" hidden>
-        <img data-gal-src="https://giftorea.explovea.com/wp-content/uploads/2025/11/chevalet-standar-2.webp" alt="">
-        <img data-gal-src="https://giftorea.explovea.com/wp-content/uploads/2025/11/chevalet-standar-2.webp" alt="">
-        <div class="gft-desc" hidden>We will add description later</div>
+        <img data-gal-src="../assets/images/productimages/coffret02.webp" alt="Coffret 02">
+        <div class="gft-desc" hidden>
+          FR: 
+          Contenu : stylo métal tactile, carnet A5, porte-cartes de visite. 
+          Couleurs : blanc, noir, bleu marine, rouge. 
+          Marquage : UV, UV DTF, ou Flex (doré/argenté si le logo est simple).
+AR: المحتوى: 
+قلم معدني لمسي، دفتر A5، حافظة بطاقات زيارة. 
+الألوان: أبيض، أسود، أزرق داكن، أحمر. 
+الطباعة: UV أو UV DTF أو فليكس (ذهبي/فضي إذا كان الشعار بسيطًا).
+        </div>
       </div>
     </div>
 
     <div class="gft-body">
-      <h3 class="gft-name">Product Name</h3>
+      <h3 class="gft-name">Coffret 02</h3>
       <div class="gft-meta">
         <div class="gft-range"></div>
         <div class="gft-moq"></div>
@@ -1508,6 +1650,200 @@
     </div>
   </article>
   <!-- ════════════════════════════════════════════════ -->
+    <!-- cf3 -->
+  <article class="gft-card" data-id="cf3" data-moq="5" data-step="1"
+    data-tier='[
+      {"minQty":100,"unitPrice":120},
+      {"minQty":50,"unitPrice":130},
+      {"minQty":25,"unitPrice":140},
+      {"minQty":5,"unitPrice":150}
+    ]'>
+
+    <div class="gft-media">
+      <img src="../assets/images/productimages/coffret03white.webp" alt="Coffret 03">
+      <button type="button" class="gft-view" data-view="cf3">View</button>
+
+      <div class="gft-gallery" hidden>
+        <img data-gal-src="../assets/images/productimages/coffret03white.webp" alt="Coffret 03 blanc">
+        <img data-gal-src="../assets/images/productimages/coffret03white.webp" alt="Coffret 03 noir">
+        <div class="gft-desc" hidden>
+FR
+• Contenu : stylo en métal, carnet A5, thermos 500 ml avec afficheur digital
+• Couleurs : blanc ou noir
+• Marquage : UV, UV DTF, ou Flex (doré/argenté si logo simple)
+
+AR
+المحتوى:
+• قلم معدني، دفتر A5، قارورة حرارية 500 مل مع شاشة رقمية
+• الألوان: أبيض أو أسود
+• الطباعة: UV أو UV DTF أو فليكس (ذهبي/فضي إذا كان الشعار بسيطًا)
+        </div>
+      </div>
+    </div>
+
+    <div class="gft-body">
+      <h3 class="gft-name">Coffret 03</h3>
+      <div class="gft-meta">
+        <div class="gft-range"></div>
+        <div class="gft-moq"></div>
+      </div>
+
+      <div class="gft-row">
+        <div class="gft-stepper">
+          <button type="button" data-action="dec" data-id="cf3">−</button>
+          <input type="number" min="0" step="5" value="0" data-id="cf3">
+          <button type="button" data-action="inc" data-id="cf3">+</button>
+        </div>
+      </div>
+
+      <div class="gft-total">Total: 0 DZD</div>
+    </div>
+  </article>
+
+  <!-- cf4 -->
+  <article class="gft-card" data-id="cf4" data-moq="5" data-step="1"
+    data-tier='[
+      {"minQty":100,"unitPrice":120},
+      {"minQty":50,"unitPrice":130},
+      {"minQty":25,"unitPrice":140},
+      {"minQty":5,"unitPrice":150}
+    ]'>
+
+    <div class="gft-media">
+      <img src="../assets/images/productimages/coffret04.webp" alt="Coffret 04">
+      <button type="button" class="gft-view" data-view="cf4">View</button>
+
+      <div class="gft-gallery" hidden>
+        <img data-gal-src="../assets/images/productimages/coffret04.webp" alt="Coffret 04">
+        <div class="gft-desc" hidden>
+          FR: 
+          Contenu : stylo métal tactile, carnet A5, power bank 1000 mAh, clé USB 32 Go. Couleurs : noir ou blanc, avec coffret assorti à la couleur. 
+          Marquage : UV, UV DTF, ou Flex (doré/argenté si le logo est simple).
+AR: 
+المحتوى:
+ قلم معدني لمسي، دفتر A5، باور بنك 1000 mAh، ذاكرة USB 32 جيغا. 
+ الألوان: أسود أو أبيض مع علبة بنفس اللون. 
+ الطباعة: UV أو UV DTF أو فليكس (ذهبي/فضي إذا كان الشعار بسيطًا).
+        </div>
+      </div>
+    </div>
+
+    <div class="gft-body">
+      <h3 class="gft-name">Coffret 04</h3>
+      <div class="gft-meta">
+        <div class="gft-range"></div>
+        <div class="gft-moq"></div>
+      </div>
+
+      <div class="gft-row">
+        <div class="gft-stepper">
+          <button type="button" data-action="dec" data-id="cf4">−</button>
+          <input type="number" min="0" step="5" value="0" data-id="cf4">
+          <button type="button" data-action="inc" data-id="cf4">+</button>
+        </div>
+      </div>
+
+      <div class="gft-total">Total: 0 DZD</div>
+    </div>
+  </article>
+
+  <!-- cf5 -->
+  <article class="gft-card" data-id="cf5" data-moq="5" data-step="1"
+    data-tier='[
+      {"minQty":100,"unitPrice":120},
+      {"minQty":50,"unitPrice":130},
+      {"minQty":25,"unitPrice":140},
+      {"minQty":5,"unitPrice":150}
+    ]'>
+
+    <div class="gft-media">
+      <img src="../assets/images/productimages/coffret05.webp" alt="Coffret 05">
+      <button type="button" class="gft-view" data-view="cf5">View</button>
+
+      <div class="gft-gallery" hidden>
+        <img data-gal-src="../assets/images/productimages/coffret05.webp" alt="Coffret 05">
+        <div class="gft-desc" hidden>
+          FR: 
+          Contenu : stylo en métal, carnet A5, thermos 500 ml avec afficheur digital, clé USB 32 Go. 
+          Couleurs : blanc (par défaut) ou noir. 
+          Marquage : UV, UV DTF, ou Flex (doré/argenté si le logo est simple).
+AR: المحتوى:
+ قلم معدني، دفتر A5، قارورة حرارية 500 مل مع شاشة رقمية، ذاكرة USB بسعة 32 جيغا. 
+ الألوان: أبيض افتراضيًا أو أسود. 
+ الطباعة: UV أو UV DTF أو فليكس (ذهبي/فضي إذا كان الشعار بسيطًا).
+        </div>
+      </div>
+    </div>
+
+    <div class="gft-body">
+      <h3 class="gft-name">Coffret 05</h3>
+      <div class="gft-meta">
+        <div class="gft-range"></div>
+        <div class="gft-moq"></div>
+      </div>
+
+      <div class="gft-row">
+        <div class="gft-stepper">
+          <button type="button" data-action="dec" data-id="cf5">−</button>
+          <input type="number" min="0" step="5" value="0" data-id="cf5">
+          <button type="button" data-action="inc" data-id="cf5">+</button>
+        </div>
+      </div>
+
+      <div class="gft-total">Total: 0 DZD</div>
+    </div>
+  </article>
+
+  <!-- cf6 -->
+  <article class="gft-card" data-id="cf6" data-moq="5" data-step="1"
+    data-tier='[
+      {"minQty":100,"unitPrice":120},
+      {"minQty":50,"unitPrice":130},
+      {"minQty":25,"unitPrice":140},
+      {"minQty":5,"unitPrice":150}
+    ]'>
+
+    <div class="gft-media">
+      <img src="../assets/images/productimages/coffretx.webp" alt="Coffret 06">
+      <button type="button" class="gft-view" data-view="cf6">View</button>
+
+      <div class="gft-gallery" hidden>
+        <img data-gal-src="../assets/images/productimages/coffretx.webp" alt="Coffret 06">
+        <div class="gft-desc" hidden>
+          FR
+• Contenu : stylo métal tactile, carnet A5, porte-cartes de visite, porte-clés métallique
+• Couleurs : blanc, noir, bleu marine, rouge
+• Marquage : UV, UV DTF, ou Flex (doré/argenté si logo simple)
+
+AR
+• المحتوى: 
+قلم معدني لمسي، دفتر A5، حافظة بطاقات زيارة، سلسلة مفاتيح معدنية
+• الألوان: أبيض، أسود، أزرق داكن، أحمر
+• الطباعة: UV أو UV DTF أو فليكس (ذهبي/فضي إذا كان الشعار بسيطًا)
+        </div>
+      </div>
+    </div>
+
+    <div class="gft-body">
+      <h3 class="gft-name">Coffret 06</h3>
+      <div class="gft-meta">
+        <div class="gft-range"></div>
+        <div class="gft-moq"></div>
+      </div>
+
+      <div class="gft-row">
+        <div class="gft-stepper">
+          <button type="button" data-action="dec" data-id="cf6">−</button>
+          <input type="number" min="0" step="5" value="0" data-id="cf6">
+          <button type="button" data-action="inc" data-id="cf6">+</button>
+        </div>
+      </div>
+
+      <div class="gft-total">Total: 0 DZD</div>
+    </div>
+  </article>
+  <!-- ════════════════════════════════════════════════ -->
+
 </div> 
 </details>
 <!-- ──────────────────────────────────────────────── -->
@@ -1531,11 +1867,11 @@
   ]'>
 
   <div class="gft-media">
-    <img src="assets/images/productimages/totbagwhite.webp" alt="Tot bag – blanc sublimation ">
+    <img src="../assets/images/productimages/totbagwhite.webp" alt="Tot bag – blanc sublimation ">
     <button type="button" class="gft-view" data-view="sac1">View</button>
 
     <div class="gft-gallery" hidden>
-      <img data-gal-src="assets/images/productimages/totbagwhite.webp" alt="">
+      <img data-gal-src="../assets/images/productimages/totbagwhite.webp" alt="">
       <div class="gft-desc" hidden>We will add description later</div>
     </div>
   </div>
@@ -1570,11 +1906,11 @@
   ]'>
 
   <div class="gft-media">
-    <img src="assets/images/productimages/totbag.webp" alt="Tot bag – color (DTF)">
+    <img src="../assets/images/productimages/totbag.webp" alt="Tot bag – color (DTF)">
     <button type="button" class="gft-view" data-view="sac2">View</button>
 
     <div class="gft-gallery" hidden>
-      <img data-gal-src="assets/images/productimages/totbag.webp" alt="">
+      <img data-gal-src="../assets/images/productimages/totbag.webp" alt="">
       <div class="gft-desc" hidden>We will add description later</div>
     </div>
   </div>
@@ -1609,11 +1945,11 @@
   ]'>
 
   <div class="gft-media">
-    <img src="assets/images/productimages/sacplastiquemini.webp" alt="Sac plastique Mini (20*30)">
+    <img src="../assets/images/productimages/sacplastiquemini.webp" alt="Sac plastique Mini (20*30)">
     <button type="button" class="gft-view" data-view="sac3">View</button>
 
     <div class="gft-gallery" hidden>
-      <img data-gal-src="assets/images/productimages/sacplastiquemini.webp" alt="">
+      <img data-gal-src="../assets/images/productimages/sacplastiquemini.webp" alt="">
       <img data-gal-src="https://giftorea.explovea.com/wp-content/uploads/2025/11/chevalet-standar-2.webp" alt="">
       <div class="gft-desc" hidden>We will add description later</div>
     </div>
@@ -1649,11 +1985,11 @@
   ]'>
 
   <div class="gft-media">
-    <img src="assets/images/productimages/sacplastiquemoyen.webp" alt="Sac plastique Moyen (40*50)">
+    <img src="../assets/images/productimages/sacplastiquemoyen.webp" alt="Sac plastique Moyen (40*50)">
     <button type="button" class="gft-view" data-view="sac4">View</button>
 
     <div class="gft-gallery" hidden>
-      <img data-gal-src="assets/images/productimages/sacplastiquemoyen.webp" alt="">
+      <img data-gal-src="../assets/images/productimages/sacplastiquemoyen.webp" alt="">
       <div class="gft-desc" hidden>We will add description later</div>
     </div>
   </div>
@@ -1688,11 +2024,11 @@
   ]'>
 
   <div class="gft-media">
-    <img src="assets/images/productimages/sacplastique.webp" alt="Sac plastique Grand (50*60)">
+    <img src="../assets/images/productimages/sacplastique.webp" alt="Sac plastique Grand (50*60)">
     <button type="button" class="gft-view" data-view="sac5">View</button>
 
     <div class="gft-gallery" hidden>
-      <img data-gal-src="assets/images/productimages/sacplastique.webp" alt="">
+      <img data-gal-src="../assets/images/productimages/sacplastique.webp" alt="">
       <div class="gft-desc" hidden>We will add description later</div>
     </div>
   </div>
@@ -1727,12 +2063,12 @@
   ]'>
 
   <div class="gft-media">
-    <img src="assets/images/productimages/craftwhitemini.webp" alt="Sac Papier Craf Mini (20*25)">
+    <img src="../assets/images/productimages/craftwhitemini.webp" alt="Sac Papier Craf Mini (20*25)">
     <button type="button" class="gft-view" data-view="sac6">View</button>
 
     <div class="gft-gallery" hidden>
-      <img data-gal-src="assets/images/productimages/craftwhitemini.webp" alt="">
-      <img data-gal-src="assets/images/productimages/craftmini.webp" alt="">
+      <img data-gal-src="../assets/images/productimages/craftwhitemini.webp" alt="">
+      <img data-gal-src="../assets/images/productimages/craftmini.webp" alt="">
       <div class="gft-desc" hidden>We will add description later</div>
     </div>
   </div>
@@ -1767,12 +2103,12 @@
   ]'>
 
   <div class="gft-media">
-    <img src="assets/images/productimages/craftmoyen.webp" alt="Sac Papier Craf Moyen (28*33)">
+    <img src="../assets/images/productimages/craftmoyen.webp" alt="Sac Papier Craf Moyen (28*33)">
     <button type="button" class="gft-view" data-view="sac7">View</button>
 
     <div class="gft-gallery" hidden>
-      <img data-gal-src="assets/images/productimages/craftmoyen.webp" alt="">
-      <img data-gal-src="assets/images/productimages/craftwhitemoyen.webp" alt="">
+      <img data-gal-src="../assets/images/productimages/craftmoyen.webp" alt="">
+      <img data-gal-src="../assets/images/productimages/craftwhitemoyen.webp" alt="">
       <div class="gft-desc" hidden>We will add description later</div>
     </div>
   </div>
@@ -1806,12 +2142,12 @@
   ]'>
 
   <div class="gft-media">
-    <img src="assets/images/productimages/craftwhitebig.webp" alt="Sac Papier Craf Grand (44*45)">
+    <img src="../assets/images/productimages/craftwhitebig.webp" alt="Sac Papier Craf Grand (44*45)">
     <button type="button" class="gft-view" data-view="sac8">View</button>
 
     <div class="gft-gallery" hidden>
-      <img data-gal-src="assets/images/productimages/craftwhitebig.webp" alt="">
-      <img data-gal-src="assets/images/productimages/craftbig.webp" alt="">
+      <img data-gal-src="../assets/images/productimages/craftwhitebig.webp" alt="">
+      <img data-gal-src="../assets/images/productimages/craftbig.webp" alt="">
       <div class="gft-desc" hidden>We will add description later</div>
     </div>
   </div>
@@ -1846,11 +2182,11 @@
   ]'>
 
   <div class="gft-media">
-    <img src="assets/images/productimages/sacrigidemini.webp" alt="Sac Papier Rigide Mini (14*18)">
+    <img src="../assets/images/productimages/sacrigidemini.webp" alt="Sac Papier Rigide Mini (14*18)">
     <button type="button" class="gft-view" data-view="sac9">View</button>
 
     <div class="gft-gallery" hidden>
-      <img data-gal-src="assets/images/productimages/sacrigidemini.webp" alt="">
+      <img data-gal-src="../assets/images/productimages/sacrigidemini.webp" alt="">
 
       <div class="gft-desc" hidden>We will add description later</div>
     </div>
@@ -1886,11 +2222,11 @@
   ]'>
 
   <div class="gft-media">
-    <img src="assets/images/productimages/sacrigidemoyen.webp" alt="Sac Papier Rigide Moyen (25*35)">
+    <img src="../assets/images/productimages/sacrigidemoyen.webp" alt="Sac Papier Rigide Moyen (25*35)">
     <button type="button" class="gft-view" data-view="sac10">View</button>
 
     <div class="gft-gallery" hidden>
-      <img data-gal-src="assets/images/productimages/sacrigidemoyen.webp" alt="">
+      <img data-gal-src="../assets/images/productimages/sacrigidemoyen.webp" alt="">
 
       <div class="gft-desc" hidden>We will add description later</div>
     </div>
@@ -1926,11 +2262,11 @@
   ]'>
 
   <div class="gft-media">
-    <img src="assets/images/productimages/sacrigidebig.webp" alt="Sac Papier Rigide Grand (35*50)">
+    <img src="../assets/images/productimages/sacrigidebig.webp" alt="Sac Papier Rigide Grand (35*50)">
     <button type="button" class="gft-view" data-view="sac11">View</button>
 
     <div class="gft-gallery" hidden>
-      <img data-gal-src="assets/images/productimages/sacrigidebig.webp" alt="">
+      <img data-gal-src="../assets/images/productimages/sacrigidebig.webp" alt="">
       <div class="gft-desc" hidden>We will add description later</div>
     </div>
   </div>
@@ -2067,9 +2403,6 @@
     </p>
 
     <div class="gft-cta-end__actions">
-      <a class="gft-btn gft-btn--primary" href="#gft-categories">
-        اطلب الآن
-      </a>
 
       <a class="gft-btn gft-btn--ghost" href="tel:+213550100706" aria-label="اتصال هاتفي">
         اتصل بنا
@@ -2088,12 +2421,11 @@
     </div>
   </div>
 </section>
-
 <!-- WARN TIP -->
 <div id="gftWarn" class="gft-warn">Le minimum de commande est 20 000 DZD. Ajoutez d’autres articles pour continuer.</div>
 </div>
 </main>
 <!-- js -->
-<script src="assets/js/cadeauxfindanne.js"></script>
+<script src="../assets/js/cadeauxfindanne.js" defer></script>
 </body>
 </html>

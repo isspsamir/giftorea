@@ -302,3 +302,58 @@
 .gft-btn:focus-visible{
   outline:0; box-shadow: 0 0 0 3px var(--sel-ring);
 }
+/* ===== Fix: remove old flag/icon backgrounds ===== */
+.gft-card-art.gft-flag,
+.gft-card-art.gft-flag--fr,
+.gft-card-art.gft-flag--en,
+.gft-card-art.gft-icon--mix,
+.gft-card-art.gft-icon--miladi {
+  background: none !important;
+  background-image: none !important;
+  border: 0 !important;
+}
+
+/* ===== Make the inner art truly square and fill the card ===== */
+/* The card is already aspect-ratio:1/1. We let the art fill it,
+   leaving a small strip at the bottom for the label pill. */
+.gft-card{
+  position: relative;
+  overflow: hidden; /* clip image to rounded corners */
+  --label-gap: 40px; /* space for the bottom label pill */
+  --art-inset: 10px; /* side/top padding inside the card */
+}
+
+.gft-card .gft-card-art{
+  position: absolute;
+  top: var(--art-inset);
+  left: var(--art-inset);
+  right: var(--art-inset);
+  bottom: calc(var(--label-gap) + var(--art-inset));
+  border-radius: 12px;
+  background: none !important; /* also kills any other decorative BGs */
+  border: 0;
+  overflow: hidden; /* in case child img has its own radius */
+}
+
+/* Image fills the art area; switch to 'contain' if you never want cropping */
+.gft-card .gft-card-img{
+  width: 100%;
+  height: 100%;
+  object-fit: cover;   /* fills edges; use 'contain' to avoid cropping */
+  display: block;
+  pointer-events: none;
+  user-select: none;
+  filter: drop-shadow(0 4px 10px rgba(11,42,74,.10));
+}
+
+/* Keep the label visible above the image */
+.gft-card .gft-card-label,
+.gft-card .gft-card-badge{
+  position: absolute;
+  z-index: 2;
+}
+.gft-card .gft-card-label{
+  left: 50%;
+  bottom: 8px;
+  transform: translateX(-50%);
+}

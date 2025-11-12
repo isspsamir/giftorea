@@ -141,6 +141,114 @@
   }
 })();
 
+// ________________________________________________________________________
+ //  _____ function te3 category lawla loads first then other load by order ______________
+
+(function(){
+  document.addEventListener('DOMContentLoaded', function(){
+    const root = document.getElementById('gft-categories');
+    if (!root) return;
+
+    // First category (Agendas) and its images (keep real src there)
+    const firstCat  = root.querySelector('.gft-cat.cat--first');
+    const firstImgs = firstCat ? Array.from(firstCat.querySelectorAll('.gft-cards img')) : [];
+
+    // All other categories' images that use data-src
+    const otherImgs = Array.from(
+      root.querySelectorAll('.gft-cat:not(.cat--first) .gft-cards img[data-src]')
+    );
+
+    // Concurrency limiter
+    const MAX_CONCURRENT = 4;
+    let inFlight = 0;
+    const queue = [];
+
+    function swapSrc(img){
+      return new Promise((resolve) => {
+        if (!img || !img.dataset || !img.dataset.src) { resolve(); return; }
+
+        const realSrc = img.dataset.src;
+        const tmp = new Image();
+        tmp.decoding = 'async';
+        tmp.onload = tmp.onerror = function(){
+          img.src = realSrc;
+          img.removeAttribute('data-src');
+          resolve();
+        };
+        tmp.src = realSrc;
+      });
+    }
+
+    function processQueue(){
+      if (inFlight >= MAX_CONCURRENT) return;
+      const next = queue.shift();
+      if (!next) return;
+      inFlight++;
+      swapSrc(next).finally(() => {
+        inFlight--;
+        processQueue();
+      });
+    }
+
+    function enqueue(img){
+      if (!img || !img.dataset || !img.dataset.src) return;
+      if (!queue.includes(img)) queue.push(img);
+      processQueue();
+    }
+
+    // IntersectionObserver: when images are near viewport, enqueue them
+    const io = ('IntersectionObserver' in window)
+      ? new IntersectionObserver((entries) => {
+          entries.forEach(entry => {
+            if (entry.isIntersecting){
+              enqueue(entry.target);
+              io.unobserve(entry.target);
+            }
+          });
+        }, { root: null, rootMargin: '400px 0px' })
+      : null;
+
+    // Observe all non-first-category images
+    otherImgs.forEach(img => {
+      if (io) io.observe(img);
+      else enqueue(img); // fallback without IO
+    });
+
+    // When ALL first-category images have loaded (or errored), warm up a few offscreen ones
+    let firstLeft = firstImgs.length;
+    if (firstLeft === 0) prewarmSome();
+    firstImgs.forEach(img => {
+      if (img.complete) {
+        if (--firstLeft === 0) prewarmSome();
+      } else {
+        img.addEventListener('load',  onFirstDone, { once: true });
+        img.addEventListener('error', onFirstDone, { once: true });
+      }
+    });
+    function onFirstDone(){
+      if (--firstLeft === 0) prewarmSome();
+    }
+    function prewarmSome(){
+      // Kick off first 4 queued images so the page feels snappy
+      const upfront = otherImgs.slice(0, 4);
+      upfront.forEach(enqueue);
+    }
+
+    // BONUS: when a <details> category is opened, nudge its images to load sooner
+    root.addEventListener('toggle', (e) => {
+      const det = e.target;
+      if (!det.matches('.gft-cat')) return;
+      if (!det.open) return; // only when opening
+      const imgs = det.querySelectorAll('.gft-cards img[data-src]');
+      imgs.forEach(img => {
+        // If not yet observed/queued, enqueue now so it starts soon
+        enqueue(img);
+        if (io) io.unobserve(img); // avoid double-callback
+      });
+    });
+  });
+})();
+
 /* === GFT CORE (unchanged app logic) === */
 (function(){
   const GFT = (window.GFT = window.GFT || {});
@@ -287,92 +395,136 @@
 })();
 
 /* --- Slider (BANNER) ------------------------------------------ */
-/* --- Slider (BANNER) ------------------------------------------ */
-(function(){
+(function () {
   document.addEventListener('DOMContentLoaded', () => {
     const sliderContainer = document.querySelector('.slider-container');
     if (!sliderContainer) return;
 
-    const slides = document.querySelectorAll('.slide');
-    const sliderWrapper = document.querySelector('.slider-wrapper');
-    const dotsContainer = document.querySelector('.dots');
-    
+    const sliderWrapper = sliderContainer.querySelector('.slider-wrapper');
+    const slides        = sliderContainer.querySelectorAll('.slide');
+    const dotsContainer = sliderContainer.querySelector('.dots');
     if (!slides.length || !sliderWrapper || !dotsContainer) return;
 
-    const totalSlides = slides.length;
-    let currentIndex = 0;
-    let autoPlayInterval;
+    const AUTOPLAY_MS   = 3000;     // autoplay interval
+    const RESUME_DELAY  = 4000;     // resume after user stops interacting (ms)
 
-    // ✅ FIX: Each slide should be 100% of container width
-    slides.forEach(slide => {
-      slide.style.width = sliderContainer.offsetWidth + 'px';
-    });
-    
-    // ✅ FIX: Wrapper width = number of slides × container width
-    sliderWrapper.style.width = (totalSlides * sliderContainer.offsetWidth) + 'px';
+    let currentIndex    = 0;
+    let timer           = null;     // single autoplay timer
+    let resumeTimer     = null;     // when to resume after interaction
+    let userInteracting = false;    // flag to keep hover resume logic sane
 
-    function createDots() {
+    // ----- sizing -----
+    function containerW() { return Math.round(sliderContainer.getBoundingClientRect().width); }
+
+    function sizeSlides() {
+      const w = containerW();
+      slides.forEach(s => { s.style.width = w + 'px'; });
+      sliderWrapper.style.width = (w * slides.length) + 'px';
+    }
+
+    // ----- dots -----
+    function renderDots() {
       dotsContainer.innerHTML = '';
-      for (let i = 0; i < totalSlides; i++) {
+      for (let i = 0; i < slides.length; i++) {
         const dot = document.createElement('span');
-        dot.className = 'dot';
-        if (i === 0) dot.classList.add('active');
-        dot.onclick = () => currentSlide(i);
+        dot.className = 'dot' + (i === 0 ? ' active' : '');
+        dot.addEventListener('click', () => goTo(i, true), { passive: true });
         dotsContainer.appendChild(dot);
       }
     }
 
-    createDots();
-    const dots = document.querySelectorAll('.dot');
-
-    function updateSlider() {
-      // ✅ FIX: Move by exact pixel amount, not percentage
-      const translateValue = -(currentIndex * sliderContainer.offsetWidth);
-      sliderWrapper.style.transform = 'translateX(' + translateValue + 'px)';
-      
-      dots.forEach(dot => dot.classList.remove('active'));
-      dots[currentIndex].classList.add('active');
+    function updateDots() {
+      const dots = dotsContainer.querySelectorAll('.dot');
+      dots.forEach(d => d.classList.remove('active'));
+      if (dots[currentIndex]) dots[currentIndex].classList.add('active');
     }
 
-    window.changeSlide = function(direction) {
-      currentIndex += direction;
-      if (currentIndex >= totalSlides) currentIndex = 0;
-      else if (currentIndex < 0) currentIndex = totalSlides - 1;
-      updateSlider();
-      clearInterval(autoPlayInterval);
-      autoPlayInterval = setInterval(autoPlay, 5000);
-    };
-
-    window.currentSlide = function(index) {
-      currentIndex = index;
-      updateSlider();
-      clearInterval(autoPlayInterval);
-      autoPlayInterval = setInterval(autoPlay, 5000);
-    };
-
-    function autoPlay() {
-      currentIndex++;
-      if (currentIndex >= totalSlides) currentIndex = 0;
-      updateSlider();
+    // ----- movement -----
+    function updateSliderPosition() {
+      const x = -(currentIndex * containerW());
+      sliderWrapper.style.transform = `translateX(${x}px)`;
+      updateDots();
     }
 
-    autoPlayInterval = setInterval(autoPlay, 5000);
+    function goTo(index, byUser = false) {
+      if (byUser) userPauseThenResume();
+      currentIndex = (index + slides.length) % slides.length;
+      updateSliderPosition();
+    }
 
-    sliderContainer.addEventListener('mouseenter', () => clearInterval(autoPlayInterval));
+    function next(byUser = false) { goTo(currentIndex + 1, byUser); }
+    function prev(byUser = false) { goTo(currentIndex - 1, byUser); }
+
+    // ----- timer control (single source of truth) -----
+    function startAutoplay() {
+      if (timer) return;                 // don't stack timers
+      timer = setInterval(() => next(false), AUTOPLAY_MS);
+    }
+
+    function stopAutoplay() {
+      if (timer) { clearInterval(timer); timer = null; }
+    }
+
+    function userPauseThenResume() {
+      userInteracting = true;
+      stopAutoplay();
+      if (resumeTimer) clearTimeout(resumeTimer);
+      resumeTimer = setTimeout(() => {
+        userInteracting = false;
+        startAutoplay();
+      }, RESUME_DELAY);
+    }
+
+    // ----- UI wiring -----
+    // arrows
+    const prevBtn = sliderContainer.querySelector('.slider-btn.prev');
+    const nextBtn = sliderContainer.querySelector('.slider-btn.next');
+    if (prevBtn) prevBtn.addEventListener('click', () => prev(true));
+    if (nextBtn) nextBtn.addEventListener('click', () => next(true));
+
+    // hover / pointer
+    sliderContainer.addEventListener('mouseenter', () => {
+      stopAutoplay();
+    });
     sliderContainer.addEventListener('mouseleave', () => {
-      autoPlayInterval = setInterval(autoPlay, 5000);
+      // if user clicked dots/arrows recently, wait for scheduled resume
+      if (!userInteracting) startAutoplay();
     });
 
-    // ✅ FIX: Recalculate on window resize
-    window.addEventListener('resize', () => {
-      slides.forEach(slide => {
-        slide.style.width = sliderContainer.offsetWidth + 'px';
-      });
-      sliderWrapper.style.width = (totalSlides * sliderContainer.offsetWidth) + 'px';
-      updateSlider();
+    // touch (mobile)
+    sliderContainer.addEventListener('touchstart', () => {
+      stopAutoplay();
+    }, { passive: true });
+    sliderContainer.addEventListener('touchend', () => {
+      userPauseThenResume();
+    }, { passive: true });
+
+    // page visibility (don’t run timers on hidden tab)
+    document.addEventListener('visibilitychange', () => {
+      if (document.hidden) stopAutoplay();
+      else if (!userInteracting) startAutoplay();
     });
+
+    // resize
+    window.addEventListener('resize', () => {
+      stopAutoplay();
+      sizeSlides();
+      updateSliderPosition();
+      if (!userInteracting) startAutoplay();
+    });
+
+    // init
+    sizeSlides();
+    renderDots();
+    updateSliderPosition();
+    startAutoplay();
+
+    // expose for inline onclick handlers if you still use them elsewhere
+    window.changeSlide  = (dir) => dir > 0 ? next(true) : prev(true);
+    window.currentSlide = (idx) => goTo(idx, true);
   });
 })();
+
 /* --- Categories & Products script ------------------------------------------ */
 (function(){
   const scope = document.getElementById('gft-categories');
@@ -388,12 +540,12 @@
     const mediaEls = scope.querySelectorAll('.gft-media');
     const imgs = scope.querySelectorAll('.gft-media img');
 
-    imgs.forEach(img=>{
-      img.setAttribute('draggable','false');
-      ['dragstart','mousedown','selectstart','contextmenu','pointerdown','touchstart'].forEach(ev=>{
-        img.addEventListener(ev, (e)=>{ e.preventDefault(); e.stopPropagation(); }, {passive:false});
-      });
-    });
+   imgs.forEach(img => {
+  img.setAttribute('draggable','false');
+  img.addEventListener('dragstart',  (e)=>{ e.preventDefault(); }, { passive: true });
+  img.addEventListener('contextmenu',(e)=>{ e.preventDefault(); }, { passive: true });
+  // No touchstart listener here
+});
 
     mediaEls.forEach(el=>{
       ['contextmenu','selectstart'].forEach(ev=>{
@@ -1460,3 +1612,22 @@
   document.addEventListener('gft:warn', (e)=>show(e.detail));
 })();
 
+/* ==== PERF: cheap listeners ==== */
+(function(){
+  try{
+    window.addEventListener('touchstart', ()=>{}, {passive:true});
+    window.addEventListener('wheel',      ()=>{}, {passive:true});
+  }catch(_){}
+
+  const throttle = (fn, wait=150)=>{
+    let t = 0;
+    return (...a)=>{
+      const n = Date.now();
+      if (n - t > wait){ t = n; fn(...a); }
+    };
+  };
+
+  window.addEventListener('resize', throttle(()=>{
+    // if you had resize code, put it here or call your function here
+  }, 200));
+})();
