@@ -4,7 +4,7 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Giftorea B2B — Corporate Gifts Algeria</title>
-  <link rel="stylesheet" href="assets/css/index.css" />
+  <link rel="stylesheet" href="./assets/css/index.css" />
 </head>
 <body>
   <main class="page">
@@ -37,13 +37,13 @@
 
         <!-- product cards -->
         <div class="product-card prod-1">
-          <img src="https://giftoreab2b.com/wp-content/uploads/2025/11/products.webp" alt="products image">
+          <img src="./assets/images/products.webp" alt="products image">
         </div>
         <div class="product-card prod-2">
-          <img src="https://giftoreab2b.com/wp-content/uploads/2025/11/Kit-1.webp" alt="product">
+          <img src="./assets/images/coffretblue.webp" alt="product">
         </div>
         <div class="product-card prod-3">
-          <img src="https://giftoreab2b.com/wp-content/uploads/2025/11/1.webp" alt="product">
+          <img src="./assets/images/trophy.webp" alt="product">
         </div>
       </div>
     </div>
@@ -60,21 +60,21 @@
 
         <div class="logos-wrap">
           <div class="logos-row1" role="list">
-            <div class="logo-card"><img src="https://giftoreab2b.com/wp-content/uploads/2025/11/Logo_Algerie_Telecom.svg_.webp" alt="Logo 1"></div>
-            <div class="logo-card"><img src="https://giftoreab2b.com/wp-content/uploads/2025/11/Mobilis_Logo.svg_.webp" alt="Logo 2"></div>
-            <div class="logo-card"><img src="https://giftoreab2b.com/wp-content/uploads/2025/11/LogoNAFTAL.svg_.webp" alt="Logo 3"></div>
-            <div class="logo-card"><img src="https://giftoreab2b.com/wp-content/uploads/2025/11/Objet-dynamique-vectoriel.webp" alt="Logo 4"></div>
-            <div class="logo-card"><img src="https://giftoreab2b.com/wp-content/uploads/2025/11/5.webp" alt="Logo 5"></div>
+            <div class="logo-card"><img src="./assets/images/logoalgerietelecom.webp" alt="Logo 1"></div>
+            <div class="logo-card"><img src="./assets/images/logomobilis.webp" alt="Logo 2"></div>
+            <div class="logo-card"><img src="./assets/images/logonaftal.webp" alt="Logo 3"></div>
+            <div class="logo-card"><img src="./assets/images/logocasnos.webp" alt="Logo 4"></div>
+            <div class="logo-card"><img src="./assets/images/logociar.webp" alt="Logo 5"></div>
           </div>
 
           <div class="logos-row2" role="list">
-            <div class="logo-card"><img src="https://giftoreab2b.com/wp-content/uploads/2025/11/IFRI-e1762519120886.webp" alt="Logo 6"></div>
+            <div class="logo-card"><img src="./assets/images/logoifri.webp" alt="Logo 6"></div>
             <div class="empty-spot" aria-hidden="true">
               <span class="arrow" aria-hidden="true"></span>
-              <small>We saved a spot for you</small>
+              <small>خلينالك بلاصة ليك</small>
             </div>
-            <div class="logo-card"><img src="https://giftoreab2b.com/wp-content/uploads/2025/11/noest.webp" alt="Logo 7"></div>
-            <div class="logo-card"><img src="https://giftoreab2b.com/wp-content/uploads/2025/11/logo.webp" alt="Logo 8"></div>
+            <div class="logo-card"><img src="./assets/images/logonoest.webp" alt="Logo 7"></div>
+            <div class="logo-card"><img src="./assets/images/logodhd.webp" alt="Logo 8"></div>
           </div>
         </div>
       </section>
@@ -89,9 +89,17 @@
 
     <div class="banner-container">
       <div class="banner">
-        <a class="banner-link" href="https://giftoreab2b.com/cadeauxfindannewithelementor" aria-label="See Cadeaux fin d'année offers"></a>
-        <img src="https://giftoreab2b.com/wp-content/uploads/2025/11/1400x500px.webp" alt="Cadeaux fin d'année offers">
-        <a href="#" class="cta-button">
+        <a class="banner-link" href="./cadeauxfindanne/cadeauxfindanne.html" aria-label="See Cadeaux fin d'année offers"></a>
+      <picture>
+      <source type="image/webp" media="(max-width: 768px)"
+              srcset="./assets/images/bannerhomepagemobile.webp" sizes="100vw">
+      <source type="image/webp" media="(min-width: 769px)"
+              srcset="./assets/images/bannerhomepagedesktop.webp" sizes="100vw">
+      <img class="no-lazy" fetchpriority="high"
+           src="./assets/images/bannerhomepagedesktop.webp"
+           alt="Cadeaux fin d'année offers">
+    </picture>
+        <a href="./cadeauxfindanne/cadeauxfindanne.html" class="cta-button">
           Explore Offers
           <div class="arrow">
             <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
@@ -157,8 +165,59 @@
         </article>
       </div>
     </section>
+
+    <section class="howitworks" aria-label="How it works">
+  <h3 class="how-title">How it works</h3>
+  <div class="how-grid">
+    <article class="how-card"><div class="how-emoji">🧭</div><h4>1. Choose</h4><p>Select the gift style that fits your brand.</p></article>
+    <article class="how-card"><div class="how-emoji">🧾</div><h4>2. Details</h4><p>Share your logo and invoicing information.</p></article>
+    <article class="how-card"><div class="how-emoji">🎨</div><h4>3. Design</h4><p>We prepare your branding & proof for approval.</p></article>
+    <article class="how-card"><div class="how-emoji">🚚</div><h4>4. Delivery</h4><p>We produce and deliver anywhere in Algeria.</p></article>
+  </div>
+</section>
+<section class="cta-band" aria-label="Get a quote">
+  <div class="cta-inner">
+    <h3>Ready to impress your clients?</h3>
+    <a class="cta-main" href="./contact/index.html">Demander un devis</a>
+  </div>
+</section>
   </main>
 
-  <script src="assets/js/index.js" defer></script>
+  <script src="./assets/js/index.js" defer></script>
 </body>
+<footer class="site-footer">
+  <div class="ft-wrap">
+    <div class="ft-brand">
+      <img class="ft-logo" src="./assets/images/logoalgerietelecom.webp" alt="Giftorea B2B" aria-hidden="true" style="display:none">
+      <h4>Giftorea B2B</h4>
+      <p>High-quality corporate gifts with custom branding. We deliver across Algeria.</p>
+      <div class="ft-social">
+        <a href="#" aria-label="Instagram">Instagram</a>
+        <a href="#" aria-label="Facebook">Facebook</a>
+        <a href="#" aria-label="LinkedIn">LinkedIn</a>
+      </div>
+    </div>
+
+    <nav class="ft-col">
+      <h5>Company</h5>
+      <a href="#">About</a>
+      <a href="#">Contact</a>
+      <a href="#">Careers</a>
+    </nav>
+
+    <nav class="ft-col">
+      <h5>Solutions</h5>
+      <a href="./cadeauxfindanne/index.html">Cadeaux fin d’année</a>
+      <a href="#">Employee Gifts</a>
+      <a href="#">Client Gifts</a>
+    </nav>
+
+    <div class="ft-cta">
+      <h5>Need a quote?</h5>
+      <a class="ft-btn" href="./contact/index.html">Demander un devis</a>
+      <small>📞 +213 550 100 706</small>
+    </div>
+  </div>
+  <div class="ft-bottom">© 2025 Giftorea B2B · All rights reserved.</div>
+</footer>
 </html>

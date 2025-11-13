@@ -149,16 +149,13 @@
     const root = document.getElementById('gft-categories');
     if (!root) return;
 
-    // First category (Agendas) and its images (keep real src there)
     const firstCat  = root.querySelector('.gft-cat.cat--first');
     const firstImgs = firstCat ? Array.from(firstCat.querySelectorAll('.gft-cards img')) : [];
-
-    // All other categories' images that use data-src
     const otherImgs = Array.from(
       root.querySelectorAll('.gft-cat:not(.cat--first) .gft-cards img[data-src]')
     );
 
-    // Concurrency limiter
+    // THROTTLING: only 4 images at once
     const MAX_CONCURRENT = 4;
     let inFlight = 0;
     const queue = [];
@@ -166,7 +163,6 @@
     function swapSrc(img){
       return new Promise((resolve) => {
         if (!img || !img.dataset || !img.dataset.src) { resolve(); return; }
-
         const realSrc = img.dataset.src;
         const tmp = new Image();
         tmp.decoding = 'async';
@@ -196,7 +192,7 @@
       processQueue();
     }
 
-    // IntersectionObserver: when images are near viewport, enqueue them
+    // IntersectionObserver for lazy loading
     const io = ('IntersectionObserver' in window)
       ? new IntersectionObserver((entries) => {
           entries.forEach(entry => {
@@ -208,42 +204,48 @@
         }, { root: null, rootMargin: '400px 0px' })
       : null;
 
-    // Observe all non-first-category images
     otherImgs.forEach(img => {
       if (io) io.observe(img);
-      else enqueue(img); // fallback without IO
+      else enqueue(img);
     });
 
-    // When ALL first-category images have loaded (or errored), warm up a few offscreen ones
-    let firstLeft = firstImgs.length;
-    if (firstLeft === 0) prewarmSome();
-    firstImgs.forEach(img => {
-      if (img.complete) {
-        if (--firstLeft === 0) prewarmSome();
-      } else {
-        img.addEventListener('load',  onFirstDone, { once: true });
-        img.addEventListener('error', onFirstDone, { once: true });
-      }
-    });
+    // DON'T wait - start prewarming immediately in background
+setTimeout(() => {
+  prewarmSome(); // Start loading next categories after 800ms
+}, 800);
+
+// Also prewarm when Agendas finish (backup trigger)
+let firstLeft = firstImgs.length;
+if (firstLeft === 0) {
+  setTimeout(prewarmSome, 1200); // delayed backup
+}
+firstImgs.forEach(img => {
+  if (img.complete) {
+    if (--firstLeft === 0) setTimeout(prewarmSome, 1200);
+  } else {
+    const done = () => { if (--firstLeft === 0) setTimeout(prewarmSome, 1200); };
+    img.addEventListener('load',  done, { once: true });
+    img.addEventListener('error', done, { once: true });
+  }
+});
+
     function onFirstDone(){
       if (--firstLeft === 0) prewarmSome();
     }
     function prewarmSome(){
-      // Kick off first 4 queued images so the page feels snappy
       const upfront = otherImgs.slice(0, 4);
       upfront.forEach(enqueue);
     }
 
-    // BONUS: when a <details> category is opened, nudge its images to load sooner
+    // When category opens, load its images
     root.addEventListener('toggle', (e) => {
       const det = e.target;
       if (!det.matches('.gft-cat')) return;
-      if (!det.open) return; // only when opening
+      if (!det.open) return;
       const imgs = det.querySelectorAll('.gft-cards img[data-src]');
       imgs.forEach(img => {
-        // If not yet observed/queued, enqueue now so it starts soon
         enqueue(img);
-        if (io) io.unobserve(img); // avoid double-callback
+        if (io) io.unobserve(img);
       });
     });
   });
@@ -971,6 +973,7 @@
       if(!isDown) return;
       const dx=e.clientX-startX;
       if(!dragging && Math.abs(dx)>THRESH){
+        root.classList.add('scrolling');
         dragging=true; root.classList.add('dragging');
       }
       if(dragging){
@@ -1065,6 +1068,7 @@
     isDown=false;
     if(dragging){
       root.classList.remove('dragging');
+      root.classList.remove('scrolling'); 
       stopMomentum();
       raf=requestAnimationFrame(momentum);
       dragLockUntil = nowMs() + LOCK_MS; // brief click lock (same idea as cards)

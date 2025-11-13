@@ -2373,3 +2373,39 @@ img, .gft-media, .gft-card {
 .gft-cards, .gft-marquee, .slider-container {
   touch-action: pan-y;  /* allow natural vertical scrolling */
 }
+/* GPU LAYER FIX - stops main-thread repaints */
+.gft-media,
+.gft-media img {
+  transform: translateZ(0);
+  will-change: auto; /* don't keep it always on */
+}
+
+/* During scroll, promote to GPU */
+.gft-cards.scrolling .gft-media,
+.gft-cards.dragging .gft-media {
+  will-change: transform;
+}
+/* CRITICAL: Tell browser to skip rendering offscreen categories */
+.gft-cat {
+  content-visibility: auto;
+  contain-intrinsic-size: 1px 900px; /* estimated height */
+}
+
+/* When category is open, render normally */
+.gft-cat[open] {
+  content-visibility: visible;
+}
+/* Prevent expensive recalcs during scroll */
+.gft-cards {
+  overflow-x: auto;
+  overflow-y: visible;
+  overscroll-behavior-x: contain;
+  -webkit-overflow-scrolling: touch;
+}
+
+/* Simpler rendering for images during motion */
+.gft-cards.scrolling img,
+.gft-cards.dragging img {
+  image-rendering: -webkit-optimize-contrast;
+  image-rendering: crisp-edges;
+}
