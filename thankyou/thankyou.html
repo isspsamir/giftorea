@@ -9,63 +9,53 @@
   <link rel="stylesheet" href="../assets/css/thankyou.css" />
 </head>
 <body class="ty-body">
-  <div class="thank-you-container">
-    <div class="glass-decor"></div>
-    <div class="content">
-      <img id="brandLogo" class="brand-logo" src="Giftorea.png" alt="Giftorea B2B" />
+<div class="thank-you-container">
+  <div class="glass-decor"></div>
+  <div class="content">
+    <img id="brandLogo" class="brand-logo" src="Giftorea.png" alt="Giftorea B2B" />
+    <h1 class="thank-you-title">🎁 Merci pour votre commande</h1>
+<div id="invoice-status" class="ty-status" role="status" aria-live="polite"></div>
 
-      <h1 class="thank-you-title">🎁 Merci pour votre commande</h1>
-      <div id="invoice-status" class="ty-status" role="status" aria-live="polite"></div>
+    <div class="order-ref" aria-live="polite">
+      <div class="order-badge">ID</div>
+      <div class="order-label">Numéro de commande&nbsp;:</div>
+      <div class="order-code" id="order-number">—</div>
+    </div>
 
-      <div class="order-ref" aria-live="polite">
-        <div class="order-badge">ID</div>
-        <div class="order-label">Numéro de commande&nbsp;:</div>
-        <div class="order-code" id="order-number">—</div>
-      </div>
+    <p class="lead">Commande enregistrée. Nous vous contactons sous 24h par WhatsApp ou téléphone.</p>
+    <p class="para">Gardez votre facture comme preuve de commande pour le suivi.</p>
 
-      <p class="lead">Commande enregistrée. Nous vous contactons sous 24h par WhatsApp ou téléphone.</p>
-      <p class="para">Gardez votre facture comme preuve de commande pour le suivi.</p>
-
-      <div class="section-title">Facture</div>
-      <div class="download-section">
-        <div class="download-message">
-          <p>Si la facture ne s’est pas téléchargée automatiquement, utilisez le bouton ci-dessous&nbsp;:</p>
-        </div>
-        <div class="download-buttons">
-          <button class="download-btn pdf-btn" onclick="generateInvoice()">
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true">
-              <path d="M12 3v12m0 0l4-4m-4 4l-4-4M5 21h14" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-            </svg>
-            Télécharger la facture (PDF)
-          </button>
-          <a class="download-btn whatsapp-btn" href="https://wa.me/213550100706" target="_blank" rel="noopener">
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true">
-              <path d="M20.5 12a8.5 8.5 0 0 1-12.8 7.2L4 20l.9-3.5A8.5 8.5 0 1 1 20.5 12Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-            </svg>
-            WhatsApp
-          </a>
-        </div>
-      </div>
-
-      <div class="section-title">Informations en arabe</div>
-      <div class="arabic-panel">
-        <p class="arabic-title">ملاحظة</p>
-        <p class="arabic">
-          تم تسجيل طلبك بنجاح. سنتواصل معك خلال 24 ساعة عبر الواتساب أو الهاتف لتأكيد التفاصيل.
-          يرجى الاحتفاظ بفاتورتك كدليل للمتابعة.
-        </p>
+    <div class="section-title">Facture</div>
+    <div class="download-section">
+      <div class="download-message"><p>Si la facture ne s’est pas téléchargée automatiquement, utilisez le bouton ci-dessous&nbsp;:</p></div>
+      <div class="download-buttons">
+        <button class="download-btn pdf-btn" onclick="generateInvoice()">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M12 3v12m0 0l4-4m-4 4l-4-4M5 21h14" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          Télécharger la facture (PDF)
+        </button>
+        <a class="download-btn whatsapp-btn" href="https://wa.me/213550100706" target="_blank" rel="noopener">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M20.5 12a8.5 8.5 0 0 1-12.8 7.2L4 20l.9-3.5A8.5 8.5 0 1 1 20.5 12Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          WhatsApp
+        </a>
       </div>
     </div>
+
+    <div class="section-title">Informations en arabe</div>
+    <div class="arabic-panel">
+      <p class="arabic-title">ملاحظة</p>
+      <p class="arabic">تم تسجيل طلبك بنجاح. سنتواصل معك خلال 24 ساعة عبر الواتساب أو الهاتف لتأكيد التفاصيل.
+        يرجى الاحتفاظ بفاتورتك كدليل للمتابعة.</p>
+    </div>
   </div>
+</div>
 
-  <div id="invoice-template" aria-hidden="true"></div>
+<div id="invoice-template" aria-hidden="true"></div>
 
-  <!-- External libs (must load before thankyou.js) -->
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.28/jspdf.plugin.autotable.min.js"></script>
-  <script src="https://html2canvas.hertzen.com/dist/html2canvas.min.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js"></script>
-
+<!-- libs -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.28/jspdf.plugin.autotable.min.js"></script>
+<script src="https://html2canvas.hertzen.com/dist/html2canvas.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js"></script>
   <!-- Page JS -->
   <script src="../assets/js/thankyou.js" defer></script>
 </body>

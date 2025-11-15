@@ -451,7 +451,7 @@ body{
   }
 }
 @media (max-width: 728px){
-.banner {aspect-ratio: 1:1;}
+.banner {aspect-ratio: 1:1 !important}
 .cta-button {padding:10px 20px; font-size: 12px;}
 }
 /* --- Mobile logos: 2 per row; "empty-spot" alone in the middle --- */

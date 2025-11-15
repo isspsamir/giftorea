@@ -7,32 +7,33 @@
 <meta name="author" content="Giftorea Team">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no">	
 <title>Giftorea</title>
+<link rel="dns-prefetch" href="https://giftoreab2b.com">
+<link rel="preconnect" href="https://giftoreab2b.com" crossorigin>
 <!--css-->				
 <link rel="stylesheet" href="../assets/css/cadeauxfindanne.css">
 <link rel="preload" as="image"
       href="../assets/images/bannerli3batounadesktop.webp"
-      media="(min-width: 769px)" imagesizes="100vw">
+      media="(min-width: 769px)" imagesizes="100vw" fetchpriority="high">
 
 <link rel="preload" as="image"
       href="../assets/images/bannerli3batounamobile.webp"
-      media="(max-width: 768px)" imagesizes="100vw">
+      media="(max-width: 768px)" imagesizes="100vw" fetchpriority="high">
       <!-- Hero gallery: preload all images -->
-<link rel="preload" as="image" href="../assets/images/webnumber1.webp" imagesizes="(max-width:768px) 80vw, 420px">
-<link rel="preload" as="image" href="../assets/images/webnumber2.webp" imagesizes="(max-width:768px) 80vw, 420px">
-<link rel="preload" as="image" href="../assets/images/webnumber3.webp" imagesizes="(max-width:768px) 80vw, 420px">
-<link rel="preload" as="image" href="../assets/images/webnumber4.webp" imagesizes="(max-width:768px) 80vw, 420px">
+<link rel="preload" as="image" href="../assets/images/webnumber1.webp" imagesizes="(max-width:768px) 80vw, 420px"fetchpriority="high">
+<link rel="preload" as="image" href="../assets/images/webnumber2.webp" imagesizes="(max-width:768px) 80vw, 420px" fetchpriority="high">
+<link rel="preload" as="image" href="../assets/images/webnumber3.webp" imagesizes="(max-width:768px) 80vw, 420px" fetchpriority="high">
+<link rel="preload" as="image" href="../assets/images/webnumber4.webp" imagesizes="(max-width:768px) 80vw, 420px"fetchpriority="high">
 
-<link rel="preload" as="image" href="../assets/images/pack01starter.webp">
-<link rel="preload" as="image" href="../assets/images/pack02standard.webp">
-<link rel="preload" as="image" href="../assets/images/pack03economic.webp">
-<link rel="preload" as="image" href="../assets/images/pack04professional.webp">
-<link rel="preload" as="image" href="../assets/images/pack05executive.webp">
-<link rel="preload" as="image" href="../assets/images/starter.webp">
-<link rel="preload" as="image" href="../assets/images/standard.webp">
-<link rel="preload" as="image" href="../assets/images/economic.webp">
-<link rel="preload" as="image" href="../assets/images/professional.webp">
-<link rel="preload" as="image" href="../assets/images/executive.webp">
-
+<link rel="preload" as="image" href="../assets/images/pack01starter.webp" fetchpriority="high">
+<link rel="preload" as="image" href="../assets/images/pack02standard.webp" fetchpriority="high">
+<link rel="preload" as="image" href="../assets/images/pack03economic.webp" fetchpriority="high">
+<link rel="preload" as="image" href="../assets/images/pack04professional.webp" fetchpriority="high">
+<link rel="preload" as="image" href="../assets/images/pack05executive.webp" fetchpriority="high">
+<link rel="preload" as="image" href="../assets/images/starter.webp"fetchpriority="high">
+<link rel="preload" as="image" href="../assets/images/standard.webp" fetchpriority="high">
+<link rel="preload" as="image" href="../assets/images/economic.webp" fetchpriority="high">
+<link rel="preload" as="image" href="../assets/images/professional.webp" fetchpriority="high">
+<link rel="preload" as="image" href="../assets/images/executive.webp" fetchpriority="high">
 </head>
 <body id="main">
 <!-- === Fixed Global Background (Mesh + Blobs + Rays) === -->
@@ -89,10 +90,10 @@
 <div class="banner-container">
   <picture>
     <source type="image/webp" media="(max-width: 768px)"
-            srcset="../assets/images/bannerli3batounamobile.webp" sizes="100vw">
+            srcset="../assets/images/bannerli3batounamobile.webp" sizes="100vw" loading="eager" decoding="async">
     <source type="image/webp" media="(min-width: 769px)"
-            srcset="../assets/images/bannerli3batounadesktop.webp" sizes="100vw">
-    <img class="no-lazy" fetchpriority="high"
+            srcset="../assets/images/bannerli3batounadesktop.webp" sizes="100vw" loading="eager" decoding="async">
+    <img class="no-lazy" fetchpriority="high" loading="eager" decoding="async"
          src="../assets/images/bannerli3batounadesktop.webp"
          alt="هدایـا نهاية السنة للشركات — عروض مخصصة مع شعار شركتك">
   </picture>
@@ -158,41 +159,41 @@
         <div class="slider-wrapper">
             <!-- Slide 1 -->
             <div class="slide">
-                <a href="https://example.com/offer1" target="_blank">
-                    <img class="desktop-img" src="../assets/images/pack01starter.webp" alt="Pack Starter Desktop">
-                    <img class="mobile-img" src="../assets/images/starter.webp" alt="Pack Starter Mobile">
+                <a href="#" target="_blank">
+                    <img class="desktop-img" src="../assets/images/pack01starter.webp" alt="Pack Starter Desktop" loading="eager" decoding="async" fetchpriority="high">
+                    <img class="mobile-img" src="../assets/images/starter.webp" alt="Pack Starter Mobile" loading="eager" decoding="async" fetchpriority="high">
                 </a>
             </div>
             
             <!-- Slide 2 -->
             <div class="slide">
-                <a href="https://example.com/offer2" target="_blank">
-                    <img class="desktop-img" src="../assets/images/pack02standard.webp" alt="Pack Standard Desktop">
-                    <img class="mobile-img" src="../assets/images/standard.webp" alt="Pack Standard Mobile">
+                <a href="#" target="_blank">
+                    <img class="desktop-img" src="../assets/images/pack02standard.webp" alt="Pack Standard Desktop" loading="eager" decoding="async" fetchpriority="high">
+                    <img class="mobile-img" src="../assets/images/standard.webp" alt="Pack Standard Mobile" loading="eager" decoding="async" fetchpriority="high">
                 </a>
             </div>
             
             <!-- Slide 3 -->
             <div class="slide">
-                <a href="https://example.com/offer3" target="_blank">
-                    <img class="desktop-img" src="../assets/images/pack03economic.webp" alt="Pack Economic Desktop">
-                    <img class="mobile-img" src="../assets/images/economic.webp" alt="Pack Economic Mobile">
+                <a href="#" target="_blank">
+                    <img class="desktop-img" src="../assets/images/pack03economic.webp" alt="Pack Economic Desktop" loading="eager" decoding="async" fetchpriority="high">
+                    <img class="mobile-img" src="../assets/images/economic.webp" alt="Pack Economic Mobile" loading="eager" decoding="async" fetchpriority="high">
                 </a>
             </div>
 
             <!-- Slide 4 -->
             <div class="slide">
-                <a href="https://example.com/offer4" target="_blank">
-                    <img class="desktop-img" src="../assets/images/pack04professional.webp" alt="Pack Professional Desktop">
-                    <img class="mobile-img" src="../assets/images/professional.webp" alt="Pack Professional Mobile">
+                <a href="#" target="_blank">
+                    <img class="desktop-img" src="../assets/images/pack04professional.webp" alt="Pack Professional Desktop" loading="eager" decoding="async" fetchpriority="high">
+                    <img class="mobile-img" src="../assets/images/professional.webp" alt="Pack Professional Mobile" loading="eager" decoding="async" fetchpriority="high">
                 </a>
             </div>
 
             <!-- Slide 5 -->
             <div class="slide">
-                <a href="https://example.com/offer4" target="_blank">
-                    <img class="desktop-img" src="../assets/images/pack05executive.webp" alt="Pack Professional Desktop">
-                    <img class="mobile-img" src="../assets/images/executive.webp" alt="Pack Professional Mobile">
+                <a href="#" target="_blank">
+                    <img class="desktop-img" src="../assets/images/pack05executive.webp" alt="Pack Professional Desktop" loading="eager" decoding="async" fetchpriority="high">
+                    <img class="mobile-img" src="../assets/images/executive.webp" alt="Pack Professional Mobile" loading="eager" decoding="async" fetchpriority="high">
                 </a>
             </div>
             
@@ -200,7 +201,7 @@
 
   <button class="slider-btn prev">‹</button>
 <button class="slider-btn next">›</button>
-  <a href="https://example.com/main-offer" target="_blank" class="cta-button">Voir l'offre</a>
+  <a href="#" target="_blank" class="cta-button">Voir l'offre</a>
   <div class="dots"></div>
 </div>
 

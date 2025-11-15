@@ -1236,9 +1236,10 @@ margin-bottom: 28px;}
   }
 
   .gft-view{
-    padding: 8px 12px;
+    padding: 6px 8px;
     min-height: 40px;
     gap:6px;
+    font-size: 6px !important;
   }
   .gft-eye{ width:15px; height:15px; }
   .gft-view__label{ font-size:12px; }
@@ -2274,11 +2275,7 @@ margin-bottom: 140px; !important
   pointer-events:none;
   box-shadow: 0 0 0 0 rgba(37,211,102,.45);
 }
-@media (max-width: 767px){
-.gft-cta-end{
-  width: 100%;
-}
-}
+@media (max-width: 767px){.gft-cta-end{ width: 100%;}}
 
 /* Respect reduced motion */
 @media (prefers-reduced-motion: reduce){
@@ -2294,11 +2291,12 @@ margin-bottom: 140px; !important
   html, body { background-attachment: scroll !important; }
 
   /* remove backdrop-filter/filters */
-  .glass, .gft-bg, .gft-orderPanel, .gft-orderPanel .gft-place {
+  .glass, .gft-bg, .gft-orderPanel, .gft-orderPanel .gft-gallery {
     -webkit-backdrop-filter: none !important;
     backdrop-filter: none !important;
     filter: none !important;
     box-shadow: 0 4px 12px rgba(0,0,0,.08) !important;
+    background: #fff !important;
   }
 
   /* lighter cards */
@@ -2409,3 +2407,4 @@ img, .gft-media, .gft-card {
   image-rendering: -webkit-optimize-contrast;
   image-rendering: crisp-edges;
 }
+

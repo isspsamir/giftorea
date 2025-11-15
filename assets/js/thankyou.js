@@ -8,29 +8,13 @@
    - Slightly increased spacing between choice rows
    =========================================================== */
 
-/* libs */
 window.jsPDF = window.jspdf.jsPDF;
 try { emailjs.init("AUKVraZwu5iufPOe7"); } catch (_) {}
 
-async function ensureEmailJSReady(){
-  if (window.emailjs && typeof emailjs.send === 'function') {
-    try { emailjs.init("AUKVraZwu5iufPOe7"); } catch(_) {}
-    return true;
-  }
-  try {
-    await new Promise((resolve,reject)=>{
-      const s=document.createElement('script');
-      s.src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js";
-      s.onload=resolve; s.onerror=reject; document.head.appendChild(s);
-    });
-    emailjs.init("AUKVraZwu5iufPOe7");
-    return true;
-  } catch(err){
-    console.error('EmailJS load/init failed:', err);
-    return false;
-  }
-}
-
+/* EmailJS config */
+const EMAILJS_PUBLIC_KEY = "AUKVraZwu5iufPOe7";
+const EMAILJS_SERVICE_ID = "service_chey66l";
+const EMAILJS_TEMPLATE_ID = "template_fuau9gh";
 
 /* tokens + utils */
 const BRAND_NAME = "Giftorea B2B";
@@ -42,10 +26,30 @@ function fmtDZD(n){ return `${Number(n||0).toLocaleString('en-US')} DZD`; }
 function formatDate(d){ return d.toLocaleDateString('fr-FR',{year:'numeric',month:'short',day:'numeric',hour:'2-digit',minute:'2-digit'}); }
 function esc(s){ if(s==null) return ""; return String(s).replace(/[&<>"]/g,m=>({ "&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;" }[m])); }
 
+/* Ensure EmailJS is loaded and initialized */
+async function ensureEmailJSReady(){
+  if (window.emailjs && typeof emailjs.send === 'function') {
+    try { emailjs.init(EMAILJS_PUBLIC_KEY); } catch(_) {}
+    return true;
+  }
+  try {
+    await new Promise((resolve,reject)=>{
+      const s=document.createElement('script');
+      s.src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js";
+      s.onload=resolve; s.onerror=reject; document.head.appendChild(s);
+    });
+    emailjs.init(EMAILJS_PUBLIC_KEY);
+    return true;
+  } catch(err){
+    console.error('EmailJS load/init failed:', err);
+    return false;
+  }
+}
+
 const WILAYA_MAP={"01":"Adrar","02":"Chlef","03":"Laghouat","04":"Oum El Bouaghi","05":"Batna","06":"Béjaïa","07":"Biskra","08":"Béchar","09":"Blida","10":"Bouira","11":"Tamanrasset","12":"Tébessa","13":"Tlemcen","14":"Tiaret","15":"Tizi Ouzou","16":"Alger","17":"Djelfa","18":"Jijel","19":"Sétif","20":"Saïda","21":"Skikda","22":"Sidi Bel Abbès","23":"Annaba","24":"Guelma","25":"Constantine","26":"Médéa","27":"Mostaganem","28":"M'Sila","29":"Mascara","30":"Ouargla","31":"Oran","32":"El Bayadh","33":"Illizi","34":"Bordj Bou Arréridj","35":"Boumerdès","36":"El Tarf","37":"Tindouf","38":"Tissemsilt","39":"El Oued","40":"Khenchela","41":"Souk Ahras","42":"Tipaza","43":"Mila","44":"Aïn Defla","45":"Naâma","46":"Aïn Témouchent","47":"Ghardaïa","48":"Relizane","49":"Timimoun","50":"Bordj Badji Mokhtar","51":"Ouled Djellal","52":"Béni Abbès","53":"In Salah","54":"In Guezzam","55":"Touggourt","56":"Djanet","57":"El M'Ghair","58":"El Meniaa"};
 function resolveWilaya(state){ if(!state) return ""; const s=String(state).trim(); const m=s.match(/(\d{2})/); if(m&&WILAYA_MAP[m[1]]) return WILAYA_MAP[m[1]]; const pad=s.padStart(2,"0"); return WILAYA_MAP[pad]||s; }
 
-/* busy overlay */
+/* busy overlay (unchanged) */
 (function injectBusyCss(){
   const css = `
   #gft-busy{position:fixed;inset:0;display:none;align-items:center;justify-content:center;
@@ -64,7 +68,7 @@ function showBusy(msg){
 }
 function hideBusy(){ const el=document.getElementById('gft-busy'); if(el) el.style.display='none'; }
 
-/* WP order save */
+/* WP order save (unchanged) */
 async function getOrderToken(){ try{ const r=await fetch('/wp-json/gft/v1/order-token',{method:'GET',credentials:'same-origin'}); const j=await r.json(); return (j&&j.ok)?j.token:null; }catch{ return null; } }
 async function saveOrderToWP(orderData){
   try{
@@ -101,60 +105,69 @@ async function uploadInvoiceToWP(pdfBlob, filename){
   }catch(e){ return null; }
 }
 
-/* Email (HTML body + attachment + invoice_url) */
-async function sendOrderEmail(orderData, invoiceNumber=null, pdfBase64=null){
+/* Email (FIXED): guaranteed init + non-empty body + attachment + URL */
+async function sendOrderEmail(orderData, invoiceNumber=null, pdfBase64=null, invoiceUrl=null){
   try{
     const ready = await ensureEmailJSReady();
-    if(!ready) { console.error('EmailJS not ready'); return; }
+    if(!ready) throw new Error('EmailJS not ready');
 
     const c = orderData.customerInfo || {};
-    let messageBody;
-    if(orderData.source === 'custom'){
-      const itemsHTML = itemsTable(orderData.orderDetails?.products, orderData.orderDetails?.globalTotal);
-      const inner = `${clientBlock(c)}${itemsHTML}
-        <div style="margin-top:16px;text-align:right;">
-          <a href="tel:${esc(c.phone)}" style="display:inline-block;background:#111827;color:#fff;text-decoration:none;padding:10px 14px;border-radius:10px;font:600 13px -apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Arial;">Appeler le client</a>
-        </div>`;
-      messageBody = emailShell(inner);
-    } else if(orderData.source === 'ready-pack'){
-      const packHTML = packTable(orderData.packInfo || {});
-      const inner = `${clientBlock(c)}${packHTML}
-        <div style="margin-top:16px;text-align:right;">
-          <a href="tel:${esc(c.phone)}" style="display:inline-block;background:#111827;color:#fff;text-decoration:none;padding:10px 14px;border-radius:10px;font:600 13px -apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Arial;">Appeler le client</a>
-        </div>`;
-      messageBody = emailShell(inner);
-    }
+    const od = orderData.orderDetails || {};
+    const rows = (od.products||[]).map(p=>{
+      const q = Number(p.quantity ?? p.qty ?? 0);
+      const price = Number(p.price||0);
+      const total = (p.totalPrice!=null)?Number(p.totalPrice):(price*q);
+      return `<tr>
+        <td style="padding:6px 8px;border-bottom:1px solid #eee">${esc(p.name||'')}</td>
+        <td style="padding:6px 8px;text-align:center;border-bottom:1px solid #eee">${q}</td>
+        <td style="padding:6px 8px;text-align:right;border-bottom:1px solid #eee">${(total||0).toLocaleString('en-US')} DZD</td>
+      </tr>`;
+    }).join('');
+    const html = `
+      <div style="max-width:680px;margin:0 auto;padding:16px;background:#f6f9ff;border:1px solid #e5edff;border-radius:14px">
+        <h3 style="margin:0 0 6px 0;font:700 16px ui-sans-serif">Nouvelle facture #${esc(invoiceNumber||'')}</h3>
+        <div style="font:400 13px ui-sans-serif">
+          <div><strong>Entreprise:</strong> ${esc(c.company||'-')}</div>
+          <div><strong>Nom:</strong> ${esc(c.name||'-')}</div>
+          <div><strong>Téléphone:</strong> ${esc(c.phone||'-')}</div>
+          <div><strong>Email:</strong> ${esc(c.email||'-')}</div>
+        </div>
+        <table style="width:100%;margin-top:10px;border-collapse:collapse;font:400 13px ui-sans-serif">
+          <thead><tr><th style="text-align:left;border-bottom:1px solid #e5e7eb;padding:6px 8px">Désignation</th><th style="text-align:center;border-bottom:1px solid #e5e7eb;padding:6px 8px">Qté</th><th style="text-align:right;border-bottom:1px solid #e5e7eb;padding:6px 8px">Total</th></tr></thead>
+          <tbody>${rows}</tbody>
+        </table>
+        ${invoiceUrl ? `<div style="margin-top:10px">🔗 <a href="${esc(invoiceUrl)}" target="_blank">Ouvrir la facture en ligne</a></div>` : ''}
+      </div>`;
 
-    const emailParams = {
+    const params = {
       to_name: c.company || '',
       from_name: 'Giftorea B2B',
       invoice_number: invoiceNumber || '',
-      // send body in multiple fields so the template never renders empty
-      message: messageBody,
-      message_html: messageBody,
-      html: messageBody,
-      content: messageBody
+      invoice_url: invoiceUrl || '',
+      message: html,
+      message_html: html,
+      html: html,
+      content: html
     };
 
-    // keep your existing attachment param (if your template has a File var named "pdf_file")
-    if (pdfBase64) {
-      emailParams.pdf_file = pdfBase64;
-      // optional: EmailJS attachments array (works even if the template doesn’t define a File var)
-      emailParams.attachments = [{
-        name: `Facture-Giftorea-${invoiceNumber||'commande'}.pdf`,
-        data: pdfBase64
-      }];
+    if (pdfBase64){
+      params.pdf_file = pdfBase64; // if your template uses a File var named pdf_file
+      params.attachments = [{ name: `Facture-Giftorea-${invoiceNumber||'commande'}.pdf`, data: pdfBase64 }];
     }
 
-    await emailjs.send('service_chey66l', 'template_fuau9gh', emailParams);
-    console.log('Email sent successfully');
+    const res = await emailjs.send(EMAILJS_SERVICE_ID, EMAILJS_TEMPLATE_ID, params);
+    console.log('Email sent:', res && res.status);
+
+    const st = document.getElementById('invoice-status');
+    if(st) st.textContent = 'Facture envoyée par email ✔';
   }catch(err){
     console.error('Email sending error:', err);
+    const st = document.getElementById('invoice-status');
+    if(st) st.textContent = 'Échec d’envoi email (voir console).';
   }
 }
 
-
-/* id fallback */
+/* id fallback (unchanged) */
 function localDailyId(){
   try{
     const tz='Africa/Algiers';
@@ -167,7 +180,7 @@ function localDailyId(){
   }
 }
 
-/* logo preload */
+/* logo (unchanged) */
 async function preloadLogo(){
   const imgEl=document.getElementById('brandLogo'); const src=imgEl?.src; if(!src) return null;
   return new Promise(resolve=>{
@@ -177,7 +190,7 @@ async function preloadLogo(){
   });
 }
 
-/* tiny icons for PDF */
+/* simple icons (unchanged drawing) */
 function drawIcon(doc,name,x,y,s=4,color=NAVY){
   doc.setDrawColor(...color); doc.setLineWidth(0.3);
   switch(name){
@@ -193,7 +206,7 @@ function drawIcon(doc,name,x,y,s=4,color=NAVY){
   }
 }
 
-/* products and fallbacks */
+/* products (unchanged) */
 function sumProducts(products){
   return (products||[]).reduce((a,p)=>{
     const q = Number(p.quantity ?? p.qty ?? 0);
@@ -220,7 +233,7 @@ function getOrderDataWithFallback(){
   return { cod, products, baseSubtotal };
 }
 
-/* totals with logo fee */
+/* totals (includes logo redraw fee) */
 function computeTotals(cod, baseSubtotal){
   const customization = cod.customization || JSON.parse(localStorage.getItem('customization')||'{}');
   const designPackage = customization.designPackage || 'standard';
@@ -233,7 +246,7 @@ function computeTotals(cod, baseSubtotal){
   return { customization, premiumFee, logoFee, rate, taxAmount, grandTotal };
 }
 
-/* PDF generator */
+/* PDF (layout preserved; Logo choice + spacing in “Choix”) */
 async function generateInvoice(invoiceNumber){
   showBusy('Génération de la facture…');
 
@@ -245,9 +258,7 @@ async function generateInvoice(invoiceNumber){
   const calLabel=customization.calendarType==='miladi'?'Miladi uniquement':'Hijri/Miladi';
   const langLabel=({ar:'Arabe',fr:'Français',en:'Anglais'})[customization.language]||'—';
   const packLabel=customization.designPackage==='premium'?'Premium (+3 500 DZD) — création sur mesure':'Standard (modèle optimisé)';
-  const logoLabel=(customization?.logo?.option==='redesign_2000')
-      ? 'Redessiner le logo (+2000 DZD)'
-      : (customization?.logo?.option==='have_ai' ? 'AI/SVG fourni' : '—');
+  const logoLabel=(customization?.logo?.option==='redesign_2000') ? 'Redessiner le logo (+2000 DZD)' : (customization?.logo?.option==='have_ai' ? 'AI/SVG fourni' : '—');
   const invLabel =customization.invoiceType==='standard'?'Facture standard — 10%':(customization.invoiceType==='mokawil'?'Mokawil Dati — 0,5%':'Sans facture — 0%');
 
   const doc = new jsPDF({orientation:'portrait', unit:'mm', format:'a4'});
@@ -261,7 +272,7 @@ async function generateInvoice(invoiceNumber){
     if(!logo) doc.text(BRAND_NAME, M.left, M.top);
     doc.setFontSize(14); doc.text('Facture', pageW/2, M.top, {align:'center'});
     doc.setFont('helvetica','normal'); doc.setFontSize(10); doc.setTextColor(...SLATE);
-    doc.text(`N°: ${invoiceNumber||''}`, pageW-M.right, M.top-3, {align:'right'});
+    doc.text(`N°: ${invoiceNumber}`, pageW-M.right, M.top-3, {align:'right'});
     doc.text(`Date: ${formatDate(new Date())}`, pageW-M.right, M.top+2, {align:'right'});
   }
   function footer(page,total){
@@ -294,7 +305,7 @@ async function generateInvoice(invoiceNumber){
     return y+h+6;
   }
 
-  // Choix card
+  // “Choix” card: shows Logo under Design; slightly more spacing
   function optionsCard(y){
     const w=pageW-M.left-M.right, h=34;
     doc.setDrawColor(...BORDER); doc.roundedRect(M.left,y,w,h,2,2,'S');
@@ -322,6 +333,7 @@ async function generateInvoice(invoiceNumber){
     doc.setFont('helvetica','normal'); doc.setTextColor(...SLATE); doc.text(packLabel,rightX+16,b);
     b+=7;
 
+    // Logo choice (new)
     doc.setFont('helvetica','bold'); doc.setTextColor(...NAVY);
     doc.text('Logo :', rightX, b);
     doc.setFont('helvetica','normal'); doc.setTextColor(...SLATE); doc.text(logoLabel, rightX+14, b);
@@ -333,28 +345,23 @@ async function generateInvoice(invoiceNumber){
     return y+h+8;
   }
 
-  // Compose PDF
-  const docStatus = document.getElementById('invoice-status');
-  if (docStatus) docStatus.textContent = 'Génération de la facture en cours…';
-
   header();
   let cursorY = M.top+10;
   cursorY = clientCard(cursorY);
   cursorY = optionsCard(cursorY);
 
+  // Small notice above items (unchanged)
   doc.setFont('helvetica','normal'); doc.setTextColor(120); doc.setFontSize(9);
   doc.text("Notice : ce document récapitule votre commande et sert de preuve de dépôt (TVA non applicable).", M.left, cursorY);
   cursorY += 5;
 
+  // Items table (unchanged)
   const head=[['Article','Prix','QTT','Total']];
-  const body=( (JSON.parse(localStorage.getItem('productData')||'{}').products)||[] )
-    .filter(p=>Number(p.quantity ?? p.qty)>0)
-    .map(p=>{
-      const q=Number(p.quantity ?? p.qty ?? 0), price=Number(p.price||0);
-      const total=Number(p.totalPrice!=null?p.totalPrice:price*q);
-      return [ (p.name||''), fmtDZD(price), String(q), fmtDZD(total) ];
-    });
-
+  const body=(products||[]).filter(p=>Number(p.quantity ?? p.qty)>0).map(p=>{
+    const q=Number(p.quantity ?? p.qty ?? 0), price=Number(p.price||0);
+    const total=Number(p.totalPrice!=null?p.totalPrice:price*q);
+    return [ (p.name||''), fmtDZD(price), String(q), fmtDZD(total) ];
+  });
   const startY=Math.max(cursorY+2, M.top+44);
   doc.autoTable({
     head, body, startY,
@@ -365,20 +372,15 @@ async function generateInvoice(invoiceNumber){
     alternateRowStyles:{fillColor:[250,250,253]}
   });
 
+  // Summary box (unchanged look) + Logo fee row if any
   let tableBottom = (doc.lastAutoTable && doc.lastAutoTable.finalY) ? doc.lastAutoTable.finalY : startY+10;
-  const pageW=210, pageH=297, Mleft=16, Mright=16, Mbottom=18;
-  const needNewPage = tableBottom + 40 > pageH - Mbottom;
+  const needNewPage = tableBottom + 40 > pageH - M.bottom;
   if(needNewPage){ doc.addPage(); header(); tableBottom = M.top + 14; }
-  const boxW=96, boxH=40, boxX=pageW - Mright - boxW, boxY=tableBottom + 8;
+  const boxW=96, boxH=40, boxX=pageW - M.right - boxW, boxY=tableBottom + 8;
   doc.setDrawColor(...BORDER); doc.setFillColor(255,255,255); doc.roundedRect(boxX,boxY,boxW,boxH,2,2,'S');
   doc.setFont('helvetica','bold'); doc.setTextColor(...NAVY); doc.setFontSize(10); doc.text('Résumé des frais', boxX+4, boxY+6);
   let ry=boxY+12, L=boxX+4, R=boxX+boxW-4;
   function row(lbl,val,bold){ doc.setFont('helvetica', bold?'bold':'normal'); doc.setTextColor(...(bold?NAVY:SLATE)); doc.text(lbl,L,ry); doc.text(val,R,ry,{align:'right'}); ry+=5.2; }
-
-  const { grandTotal, taxAmount } = computeTotals(JSON.parse(localStorage.getItem('completeOrderData')||'{}'), sumProducts(JSON.parse(localStorage.getItem('productData')||'{}').products||[]));
-  const { customization, premiumFee, logoFee, rate } = computeTotals(JSON.parse(localStorage.getItem('completeOrderData')||'{}'), 0);
-
-  const baseSubtotal = sumProducts(JSON.parse(localStorage.getItem('productData')||'{}').products||[]);
   const pct = (Math.round((rate*100)*10)/10).toString().replace('.0','');
   const designRowLabel = premiumFee>0 ? 'Option design premium :' : 'Design standard (gratuit) :';
   row('Sous-total produits :', fmtDZD(baseSubtotal), false);
@@ -388,15 +390,18 @@ async function generateInvoice(invoiceNumber){
   doc.setDrawColor(...BORDER); doc.line(L, ry-3.2, R, ry-3.2);
   row('Total général :', fmtDZD(grandTotal), true);
 
+  // REQUIRED: Left-side notice under Total
   const BOTTOM_NOTICE = "Notice: text will be here";
   const noticeY = Math.min(tableBottom + 7, pageH - M.bottom - 4);
   doc.setTextColor(90); doc.setFontSize(9);
   doc.text(BOTTOM_NOTICE, M.left, noticeY, { align:'left', maxWidth: (pageW/2) - M.left });
   doc.setTextColor(0);
 
+  // Footer(s)
   const totalPages = doc.getNumberOfPages();
   for(let i=1;i<=totalPages;i++){ doc.setPage(i); footer(i,totalPages); }
 
+  // Output + upload + email
   const filename = 'Facture-Giftorea-B2B.pdf';
   const pdfBlob  = doc.output('blob');
   const pdfBase64 = doc.output('datauristring');
@@ -405,15 +410,12 @@ async function generateInvoice(invoiceNumber){
   try { invoiceUrl = await uploadInvoiceToWP(pdfBlob, filename); } catch(_){}
 
   doc.save(filename);
-
-  const cod = JSON.parse(localStorage.getItem('completeOrderData')||'{}') || {};
   await sendOrderEmail(cod, invoiceNumber, pdfBase64, invoiceUrl);
 
-  if (docStatus) docStatus.textContent = 'Facture générée et enregistrée.';
   hideBusy();
 }
 
-/* bootstrap */
+/* bootstrap (unchanged) */
 function handleOrderSource(){
   const data = JSON.parse(localStorage.getItem('completeOrderData'));
   if(!data || !data.source) return null;
@@ -421,11 +423,9 @@ function handleOrderSource(){
   if(data.source==='ready-pack' && downloads){ downloads.style.display='none'; }
   return data;
 }
-
 window.addEventListener('load', async ()=>{
   showBusy('Préparation de votre commande…');
-  const orderData = handleOrderSource();
-  if(!orderData){ hideBusy(); return; }
+  const orderData = handleOrderSource(); if(!orderData){ hideBusy(); return; }
   let serverId = await saveOrderToWP(orderData);
   if(!serverId){ serverId = localDailyId(); }
   const refEl = document.getElementById('order-number');
@@ -433,7 +433,7 @@ window.addEventListener('load', async ()=>{
   await generateInvoice(serverId);
 });
 
-/* hover polish */
+/* hover polish (unchanged) */
 document.addEventListener('pointermove', (e)=>{
   document.querySelectorAll('.download-btn').forEach(btn=>{
     const r=btn.getBoundingClientRect(); btn.style.setProperty('--mx', ((e.clientX-r.left)/r.width*100)+'%');
