@@ -7,10 +7,13 @@
 <meta name="author" content="Giftorea Team">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no">	
 <title>Giftorea</title>
-<link rel="dns-prefetch" href="https://giftoreab2b.com">
-<link rel="preconnect" href="https://giftoreab2b.com" crossorigin>
+<link rel="dns-prefetch" href="https://giftorea.explovea.com">
+<link rel="preconnect" href="https://giftorea.explovea.com" crossorigin>
 <!--css-->				
 <link rel="stylesheet" href="../assets/css/cadeauxfindanne.css">
+  <!-- js -->
+  <script src="../assets/js/cadeauxfindanne.js" defer></script>
+  <!-- images  -->
 <link rel="preload" as="image"
       href="../assets/images/bannerli3batounadesktop.webp"
       media="(min-width: 769px)" imagesizes="100vw" fetchpriority="high">
@@ -34,8 +37,145 @@
 <link rel="preload" as="image" href="../assets/images/economic.webp" fetchpriority="high">
 <link rel="preload" as="image" href="../assets/images/professional.webp" fetchpriority="high">
 <link rel="preload" as="image" href="../assets/images/executive.webp" fetchpriority="high">
+
+<!-- ===== SMART BOOT: Show page fast, load rest progressively ===== -->
+<style>
+  /* Minimal flash prevention - only hero area */
+  #gft-boot-gate{
+    position:fixed;
+    inset:0;
+    background:#F5F7FA;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    z-index:9999;
+    opacity:1;
+    transition:opacity .3s ease;
+  }
+  #gft-boot-gate.ready{
+    opacity:0;
+    pointer-events:none;
+  }
+  /* Keep hero hidden until it's ready */
+  .gft-hero-wrap,
+  .slider-container,
+  .gft-marquee-stack{
+    opacity:0;
+    transition:opacity .4s ease;
+  }
+  body.hero-ready .gft-hero-wrap,
+  body.hero-ready .slider-container,
+  body.hero-ready .gft-marquee-stack{
+    opacity:1;
+  }
+</style>
+
+<script>
+(function(){
+  'use strict';
+  
+  // Step 1: Preload ONLY critical above-fold images (hero + slider)
+  function preloadCritical(){
+    const critical = [
+      '../assets/images/webnumber1.webp',
+      '../assets/images/webnumber2.webp',
+      '../assets/images/webnumber3.webp',
+      '../assets/images/webnumber4.webp',
+      '../assets/images/pack01starter.webp',
+      '../assets/images/bannerli3batounadesktop.webp',
+      '../assets/images/bannerli3batounamobile.webp'
+    ];
+    
+    const promises = critical.map(src => {
+      return new Promise(resolve => {
+        const img = new Image();
+        img.onload = img.onerror = () => resolve();
+        img.src = src;
+      });
+    });
+    
+    return Promise.race([
+      Promise.all(promises),
+      new Promise(r => setTimeout(r, 1500)) // max 1.5s wait
+    ]);
+  }
+  
+  // Step 2: Wait for DOM + critical images + marquee JS ready
+  async function init(){
+    await preloadCritical();
+    
+    // Wait for marquee to be functional
+    if(typeof window.GFT === 'undefined'){
+      await new Promise(r => {
+        if(document.readyState === 'complete'){
+          r();
+        }else{
+          window.addEventListener('load', r, {once:true});
+        }
+      });
+    }
+    
+    // Reveal hero
+    document.body.classList.add('hero-ready');
+    
+    // Hide boot gate after short delay
+    setTimeout(() => {
+      const gate = document.getElementById('gft-boot-gate');
+      if(gate){
+        gate.classList.add('ready');
+        setTimeout(() => gate.remove(), 400);
+      }
+    }, 200);
+    
+    // Step 3: Start lazy loading categories AFTER hero is shown
+    setTimeout(initLazyLoading, 500);
+  }
+  
+  // Step 3: Implement actual lazy loading for category images
+  function initLazyLoading(){
+    const images = document.querySelectorAll('img[data-src]');
+    
+    if('IntersectionObserver' in window){
+      const observer = new IntersectionObserver((entries, obs) => {
+        entries.forEach(entry => {
+          if(entry.isIntersecting){
+            const img = entry.target;
+            if(img.dataset.src){
+              img.src = img.dataset.src;
+              img.removeAttribute('data-src');
+              obs.unobserve(img);
+            }
+          }
+        });
+      }, {
+        rootMargin: '200px' // start loading 200px before visible
+      });
+      
+      images.forEach(img => observer.observe(img));
+    }else{
+      // Fallback: load all immediately on old browsers
+      images.forEach(img => {
+        if(img.dataset.src){
+          img.src = img.dataset.src;
+          img.removeAttribute('data-src');
+        }
+      });
+    }
+  }
+  
+  // Start when DOM ready
+  if(document.readyState === 'loading'){
+    document.addEventListener('DOMContentLoaded', init);
+  }else{
+    init();
+  }
+})();
+</script>
 </head>
 <body id="main">
+  <!-- Full-white cover while we prep JS + critical images -->
+<div id="gft-boot-gate" role="status" aria-live="polite">Chargement… اصبر الصفحة راهي تتحمل</div>
+
 <!-- === Fixed Global Background (Mesh + Blobs + Rays) === -->
 <div class="site-bgmesh" aria-hidden="true">
   <!-- Floating meshes (CSS animation only, no parallax) -->
@@ -159,41 +299,41 @@
         <div class="slider-wrapper">
             <!-- Slide 1 -->
             <div class="slide">
-                <a href="#" target="_blank">
-                    <img class="desktop-img" src="../assets/images/pack01starter.webp" alt="Pack Starter Desktop" loading="eager" decoding="async" fetchpriority="high">
-                    <img class="mobile-img" src="../assets/images/starter.webp" alt="Pack Starter Mobile" loading="eager" decoding="async" fetchpriority="high">
+                <a href="../packstarter/packstarter.html" target="_blank">
+                    <img class="desktop-img" src="../assets/images/pack01starter.webp" alt="Pack Starter Desktop"decoding="async" fetchpriority="high">
+                    <img class="mobile-img" src="../assets/images/starter.webp" alt="Pack Starter Mobile" decoding="async" fetchpriority="high">
                 </a>
             </div>
             
             <!-- Slide 2 -->
             <div class="slide">
-                <a href="#" target="_blank">
-                    <img class="desktop-img" src="../assets/images/pack02standard.webp" alt="Pack Standard Desktop" loading="eager" decoding="async" fetchpriority="high">
-                    <img class="mobile-img" src="../assets/images/standard.webp" alt="Pack Standard Mobile" loading="eager" decoding="async" fetchpriority="high">
+                <a href="../packstandard/packstandard.html" target="_blank">
+                    <img class="desktop-img" src="../assets/images/pack02standard.webp" alt="Pack Standard Desktop" decoding="async" fetchpriority="high">
+                    <img class="mobile-img" src="../assets/images/standard.webp" alt="Pack Standard Mobile" decoding="async" fetchpriority="high">
                 </a>
             </div>
             
             <!-- Slide 3 -->
             <div class="slide">
-                <a href="#" target="_blank">
-                    <img class="desktop-img" src="../assets/images/pack03economic.webp" alt="Pack Economic Desktop" loading="eager" decoding="async" fetchpriority="high">
-                    <img class="mobile-img" src="../assets/images/economic.webp" alt="Pack Economic Mobile" loading="eager" decoding="async" fetchpriority="high">
+                <a href="../packeconomic/packeconomic.html" target="_blank">
+                    <img class="desktop-img" src="../assets/images/pack03economic.webp" alt="Pack Economic Desktop" decoding="async" fetchpriority="high">
+                    <img class="mobile-img" src="../assets/images/economic.webp" alt="Pack Economic Mobile" decoding="async" fetchpriority="high">
                 </a>
             </div>
 
             <!-- Slide 4 -->
             <div class="slide">
-                <a href="#" target="_blank">
-                    <img class="desktop-img" src="../assets/images/pack04professional.webp" alt="Pack Professional Desktop" loading="eager" decoding="async" fetchpriority="high">
-                    <img class="mobile-img" src="../assets/images/professional.webp" alt="Pack Professional Mobile" loading="eager" decoding="async" fetchpriority="high">
+                <a href="../packprofessional/packprofessional.html" target="_blank">
+                    <img class="desktop-img" src="../assets/images/pack04professional.webp" alt="Pack Professional Desktop" decoding="async" fetchpriority="high">
+                    <img class="mobile-img" src="../assets/images/professional.webp" alt="Pack Professional Mobile" decoding="async" fetchpriority="high">
                 </a>
             </div>
 
             <!-- Slide 5 -->
             <div class="slide">
-                <a href="#" target="_blank">
-                    <img class="desktop-img" src="../assets/images/pack05executive.webp" alt="Pack Professional Desktop" loading="eager" decoding="async" fetchpriority="high">
-                    <img class="mobile-img" src="../assets/images/executive.webp" alt="Pack Professional Mobile" loading="eager" decoding="async" fetchpriority="high">
+                <a href="../packexecutive/packexecutive.html" target="_blank">
+                    <img class="desktop-img" src="../assets/images/pack05executive.webp" alt="Pack Professional Desktop" decoding="async" fetchpriority="high">
+                    <img class="mobile-img" src="../assets/images/executive.webp" alt="Pack Professional Mobile" decoding="async" fetchpriority="high">
                 </a>
             </div>
             
@@ -201,7 +341,6 @@
 
   <button class="slider-btn prev">‹</button>
 <button class="slider-btn next">›</button>
-  <a href="#" target="_blank" class="cta-button">Voir l'offre</a>
   <div class="dots"></div>
 </div>
 
@@ -2424,7 +2563,5 @@ AR
 <div id="gftWarn" class="gft-warn">Le minimum de commande est 20 000 DZD. Ajoutez d’autres articles pour continuer.</div>
 </div>
 </main>
-<!-- js -->
-<script src="../assets/js/cadeauxfindanne.js" defer></script>
 </body>
 </html>

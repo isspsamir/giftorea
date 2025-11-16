@@ -13,244 +13,6 @@
   10) Warning Tip
 =============================================================================*/
 
-
-/* =========================================================
-   Giftorea Boot: image priority, lazy-later, optional gate
-   Safe for Elementor, no CDN, no site-wide settings needed.
-   ========================================================= */
-(function () {
-  const doc = document;
-
-  // ————— Utilities —————
-  function addLink(rel, href, as, extra = {}) {
-    try {
-      const l = doc.createElement('link');
-      l.rel = rel; l.href = href;
-      if (as) l.as = as;
-      Object.assign(l, extra);
-      doc.head.appendChild(l);
-      return l;
-    } catch { /* noop */ }
-  }
-  function pickHeroImages() {
-    // Primary hero image (please add class "gft-hero-img" to your TOP image widget)
-    const mainHero = doc.querySelector('img.gft-hero-img');
-
-    // First image inside the hero grid (please add class "gft-hero-grid" to that 4-image grid container)
-    const gridFirst = doc.querySelector('.gft-hero-grid img');
-
-    // Fallbacks if classes aren’t set yet: first <img> on the page, then 2nd <img>
-    const firstImg  = mainHero || doc.querySelector('img');
-    const secondImg = gridFirst || doc.querySelectorAll('img')?.[1];
-
-    return { mainHero: firstImg || null, gridFirst: secondImg || null };
-  }
-  function forcePriority(img) {
-    if (!img) return;
-    try {
-      img.loading = 'eager';
-      img.decoding = 'sync';
-      if ('fetchPriority' in img) img.fetchPriority = 'high';
-      // Preload the source the browser will actually fetch
-      const src = img.currentSrc || img.src;
-      if (src) addLink('preload', src, 'image', img.srcset ? { imagesrcset: img.srcset } : {});
-      // Preconnect to the image host (dynamic, no hard-coded CDN)
-      const u = new URL(src, location.href);
-      addLink('preconnect', u.origin);
-      addLink('dns-prefetch', u.origin);
-    } catch { /* noop */ }
-  }
-  function lazyifyRest(exclude = []) {
-    const excludeSet = new Set(exclude);
-    doc.querySelectorAll('img').forEach(img => {
-      if (excludeSet.has(img)) return;
-      try {
-        if (!img.loading) img.loading = 'lazy';
-        img.decoding = 'async';
-        if ('fetchPriority' in img) img.fetchPriority = 'low';
-      } catch { /* noop */ }
-    });
-  }
-  function showGate() {
-    if (doc.getElementById('gft-gate')) return;
-    const gate = doc.createElement('div');
-    gate.id = 'gft-gate';
-    gate.innerHTML = `
-      <div class="gft-gate-card" role="status" aria-live="polite">
-        <div class="gft-gate-spinner" aria-hidden="true"></div>
-        <p class="gft-gate-text">Asber chwey!… la page se charge</p>
-      </div>
-    `;
-    doc.body.appendChild(gate);
-  }
-  function hideGate() {
-    const el = doc.getElementById('gft-gate');
-    if (el) el.remove();
-  }
-
-  // ————— Boot flow —————
-  function boot() {
-    // (A) Find our above-the-fold images
-    const { mainHero, gridFirst } = pickHeroImages();
-
-    // (B) Prioritize them
-    forcePriority(mainHero);
-    forcePriority(gridFirst);
-
-    // (C) Lazy everything else
-    lazyifyRest([mainHero, gridFirst].filter(Boolean));
-
-    // (D) Optionally fix http→https on our own domain images (avoids mixed-content delays)
-    doc.querySelectorAll('img[src^="http://"]').forEach(img => {
-      try {
-        const u = new URL(img.src);
-        if (u.hostname.endsWith('giftorea.explovea.com')) {
-          img.src = img.src.replace('http://', 'https://');
-        }
-      } catch { /* noop */ }
-    });
-
-    // (E) Gate timing: only show if the device is slow (after 800ms)
-    let gateTimer = setTimeout(showGate, 800);
-
-    // Consider the boot "ready" when the main hero settles (or after a timeout)
-    const finish = () => {
-      clearTimeout(gateTimer);
-      hideGate();
-      window.GFT_BOOT_READY = true;
-      document.dispatchEvent(new CustomEvent('gft:boot-ready'));
-      document.documentElement.setAttribute('data-gft-ready', '1');
-    };
-
-    const heroToWatch = mainHero || gridFirst;
-    if (heroToWatch && !heroToWatch.complete) {
-      heroToWatch.addEventListener('load', () => setTimeout(finish, 80), { once: true });
-      heroToWatch.addEventListener('error', () => setTimeout(finish, 80), { once: true });
-      // safety net for very slow connections
-      setTimeout(finish, 1800);
-    } else {
-      // hero is already cached/ready
-      setTimeout(finish, 50);
-    }
-  }
-
-  if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', boot, { once: true });
-  } else {
-    boot();
-  }
-})();
-
-// ________________________________________________________________________
- //  _____ function te3 category lawla loads first then other load by order ______________
-
-(function(){
-  document.addEventListener('DOMContentLoaded', function(){
-    const root = document.getElementById('gft-categories');
-    if (!root) return;
-
-    const firstCat  = root.querySelector('.gft-cat.cat--first');
-    const firstImgs = firstCat ? Array.from(firstCat.querySelectorAll('.gft-cards img')) : [];
-    const otherImgs = Array.from(
-      root.querySelectorAll('.gft-cat:not(.cat--first) .gft-cards img[data-src]')
-    );
-
-    // THROTTLING: only 4 images at once
-    const MAX_CONCURRENT = 4;
-    let inFlight = 0;
-    const queue = [];
-
-    function swapSrc(img){
-      return new Promise((resolve) => {
-        if (!img || !img.dataset || !img.dataset.src) { resolve(); return; }
-        const realSrc = img.dataset.src;
-        const tmp = new Image();
-        tmp.decoding = 'async';
-        tmp.onload = tmp.onerror = function(){
-          img.src = realSrc;
-          img.removeAttribute('data-src');
-          resolve();
-        };
-        tmp.src = realSrc;
-      });
-    }
-
-    function processQueue(){
-      if (inFlight >= MAX_CONCURRENT) return;
-      const next = queue.shift();
-      if (!next) return;
-      inFlight++;
-      swapSrc(next).finally(() => {
-        inFlight--;
-        processQueue();
-      });
-    }
-
-    function enqueue(img){
-      if (!img || !img.dataset || !img.dataset.src) return;
-      if (!queue.includes(img)) queue.push(img);
-      processQueue();
-    }
-
-    // IntersectionObserver for lazy loading
-    const io = ('IntersectionObserver' in window)
-      ? new IntersectionObserver((entries) => {
-          entries.forEach(entry => {
-            if (entry.isIntersecting){
-              enqueue(entry.target);
-              io.unobserve(entry.target);
-            }
-          });
-        }, { root: null, rootMargin: '400px 0px' })
-      : null;
-
-    otherImgs.forEach(img => {
-      if (io) io.observe(img);
-      else enqueue(img);
-    });
-
-    // DON'T wait - start prewarming immediately in background
-setTimeout(() => {
-  prewarmSome(); // Start loading next categories after 800ms
-}, 800);
-
-// Also prewarm when Agendas finish (backup trigger)
-let firstLeft = firstImgs.length;
-if (firstLeft === 0) {
-  setTimeout(prewarmSome, 1200); // delayed backup
-}
-firstImgs.forEach(img => {
-  if (img.complete) {
-    if (--firstLeft === 0) setTimeout(prewarmSome, 1200);
-  } else {
-    const done = () => { if (--firstLeft === 0) setTimeout(prewarmSome, 1200); };
-    img.addEventListener('load',  done, { once: true });
-    img.addEventListener('error', done, { once: true });
-  }
-});
-
-    function onFirstDone(){
-      if (--firstLeft === 0) prewarmSome();
-    }
-    function prewarmSome(){
-      const upfront = otherImgs.slice(0, 4);
-      upfront.forEach(enqueue);
-    }
-
-    // When category opens, load its images
-    root.addEventListener('toggle', (e) => {
-      const det = e.target;
-      if (!det.matches('.gft-cat')) return;
-      if (!det.open) return;
-      const imgs = det.querySelectorAll('.gft-cards img[data-src]');
-      imgs.forEach(img => {
-        enqueue(img);
-        if (io) io.unobserve(img);
-      });
-    });
-  });
-})();
-
 /* === GFT CORE (unchanged app logic) === */
 (function(){
   const GFT = (window.GFT = window.GFT || {});
@@ -365,11 +127,18 @@ firstImgs.forEach(img => {
     },
     emitCartUpdated(){
       const total = computeGrandTotal();
-      const items = GFT.catalog.map(p=>{
-        const q=(GFT.state.get(p.id)||{qty:0}).qty;
-        const u=unitPriceFor(p,q);
-        return u ? {id:p.id,name:p.name,image:p.image,qty:q,unit:u,total:u*q} : null;
-      }).filter(Boolean);
+      // NEW:
+const items = GFT.catalog.map(p=>{
+  const q=(GFT.state.get(p.id)||{qty:0}).qty;
+  const u=unitPriceFor(p,q);
+  if (!u) return null;
+  
+  // Get REAL image URL (check data-src first, fallback to src)
+  const imgEl = p.el?.querySelector('.gft-media img');
+  const realImage = imgEl?.getAttribute('data-src') || imgEl?.src || p.image;
+  
+  return {id:p.id, name:p.name, image:realImage, qty:q, unit:u, total:u*q};
+}).filter(Boolean);
       document.dispatchEvent(new CustomEvent('gft:cart-updated', {detail:{total,items}}));
     },
     placeOrder(){
@@ -1277,12 +1046,20 @@ firstImgs.forEach(img => {
 
   /* ========= Reveal once (unchanged) ========= */
   let revealed = false;
+
+  // NEW: don't reveal desktop panel on mobile
   (function setupRevealOnce(){
+    // Skip reveal logic on mobile
+    if (window.matchMedia('(max-width: 1023px)').matches) {
+      return; // exit early on mobile
+    }
+
     panel.classList.add('is-hidden');
     const target =
       document.querySelector('#gft-categories') ||
       document.querySelector('[data-gft-categories]') ||
-      document.querySelector('.gft-cards') || document.body;
+      document.querySelector('.gft-cards') ||
+      document.body;
 
     const io = new IntersectionObserver((entries, obs)=>{
       for (const e of entries){
@@ -1298,6 +1075,7 @@ firstImgs.forEach(img => {
 
     io.observe(target);
   })();
+
 
   /* ========= Actions ========= */
   const openSheet = () => { GFT.api.emitCartUpdated(); document.dispatchEvent(new Event('gft:open-sheet')); };

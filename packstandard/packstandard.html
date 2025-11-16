@@ -1,0 +1,141 @@
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8" />
+  <title>Pack — Giftorea</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="theme-color" content="#0B2A4A" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+
+  <!-- CSS for this page -->
+  <link rel="stylesheet" href="../assets/css/packstandard.css" />
+
+  <!-- Optional: Cadeaux dataset (if it exists) -->
+  <script src="../assets/js/cadeauxfindanne.js" defer></script>
+
+  <!-- JS for this page -->
+  <script src="../assets/js/packstandard.js" defer></script>
+</head>
+<body class="gft-body">
+  <!-- Soft background -->
+  <div class="site-bgmesh" aria-hidden="true">
+    <div class="mesh m-a"></div>
+    <div class="mesh m-b"></div>
+    <div class="blob one"></div>
+    <div class="blob two"></div>
+    <div class="rays"></div>
+  </div>
+
+  <main class="pack-wrap">
+<header class="pack-hero" role="banner">
+  <div class="pack-hero__img">
+    <picture>
+      <!-- Desktop version -->
+      <source
+        srcset="../assets/images/pack02standard.webp"
+        media="(min-width: 769px)">
+
+      <!-- Mobile version -->
+      <source
+        srcset="../assets/images/standard.webp"
+        media="(max-width: 768px)">
+
+      <!-- Fallback (desktop) -->
+      <img
+        src="../assets/images/pack02standard.webp"
+        alt="Visuel du Pack Standard Giftorea"
+        loading="lazy"
+        decoding="async">
+    </picture>
+  </div>
+</header>
+
+
+    <!-- Pack info -->
+    <section class="pack-info glass" id="packInfo">
+      <div class="pack-info__head">
+        <span class="pack-badge">Pack</span>
+        <h1 class="pack-title" id="packTitle">Pack Standard</h1>
+      </div>
+
+      <div class="pack-stats">
+        <div class="stat">
+          <span class="stat__label"><span class="ico">📦</span>Produits</span>
+          <span class="stat__value" id="statProducts">—</span>
+        </div>
+        <div class="stat">
+          <span class="stat__label"><span class="ico">🔢</span>Quantité totale</span>
+          <span class="stat__value" id="statQty">—</span>
+        </div>
+        <div class="stat">
+          <span class="stat__label"><span class="ico">💸</span>Prix</span>
+          <span class="stat__value" id="statPrice">—</span>
+        </div>
+      </div>
+
+      <div class="pack-suitable">
+        <p id="suitableText" class="lead">
+          Idéal pour PME, agences, écoles & équipes commerciales qui veulent remercier clients et collaborateurs
+          avec un coffret cohérent, utile et prêt à offrir — design inclus, personnalisation rapide, facture pro
+          et livraison maîtrisée. Parfait pour événements, cadeaux clients ou packs d’onboarding.
+        </p>
+        <ul class="value-list">
+          <li>✅ Branding express (logo, couleurs, coordonnées)</li>
+          <li>✅ Articles utiles au quotidien (bureau & déplacement)</li>
+          <li>✅ Impact visuel sans complexité ni perte de temps</li>
+        </ul>
+      </div>
+    </section>
+
+    <!-- Pack content -->
+    <section class="pack-content glass" aria-labelledby="contentTitle">
+      <h2 class="section-title" id="contentTitle">Contenu du pack</h2>
+      <div class="cards" id="contentCards"><!-- injected --></div>
+    </section>
+
+    <!-- CTAs under content -->
+    <section class="pack-ctas">
+      <button class="btn btn-primary btn-wide btn-pulse" id="orderTop">
+        🛒 <span class="btn-label">Commander ce pack</span>
+      </button>
+      <a class="btn btn-ghost btn-wide" id="backBtn" href="/offers/">
+        🧭 <span class="btn-label">Retour explorer les offres</span>
+      </a>
+    </section>
+
+    <!-- Footer help -->
+    <section class="help-cta glass">
+      <div class="help-cta__content">
+        <h3>Besoin d’aide ?</h3>
+        <p>On vous conseille en 1 minute sur WhatsApp (quantités, modèles, délais, etc.).</p>
+      </div>
+      <a class="btn btn-whatsapp btn-pulse" href="https://wa.me/213000000000" target="_blank" rel="noopener">
+        💬 Discuter sur WhatsApp
+      </a>
+    </section>
+  </main>
+
+  <!-- Sticky CTA -->
+  <div class="sticky-cta" id="stickyCta">
+    <div class="sticky-cta__meta">
+      <strong id="stickyPackName">Pack</strong>
+      <span id="stickyPackPrice">—</span>
+    </div>
+    <button class="btn btn-primary" id="orderSticky">🛒 Commander</button>
+  </div>
+
+  <!-- Modal Gallery -->
+  <div class="modal" id="galleryModal" hidden>
+    <div class="modal__backdrop" id="modalBackdrop"></div>
+    <div class="modal__dialog glass">
+      <button class="modal__close" id="modalClose" aria-label="Fermer">×</button>
+      <div class="modal__stage">
+        <button class="mnav prev" id="mPrev" aria-label="Précédent">‹</button>
+        <img id="mImg" alt="">
+        <button class="mnav next" id="mNext" aria-label="Suivant">›</button>
+      </div>
+      <div class="modal__desc" id="mDesc"></div>
+    </div>
+  </div>
+</body>
+</html>

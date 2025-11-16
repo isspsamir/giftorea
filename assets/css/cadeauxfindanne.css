@@ -2408,3 +2408,80 @@ img, .gft-media, .gft-card {
   image-rendering: crisp-edges;
 }
 
+@media (max-width: 1024px){
+  /* Panel (desktop - but just in case) */
+  .gft-orderPanel,
+  .gft-orderPanel .list,
+  .gft-orderPanel .row {
+    background: #fff !important;
+    backdrop-filter: none !important;
+    -webkit-backdrop-filter: none !important;
+  }
+  
+  /* Sheet (mobile) */
+  .gft-sheet .pn,
+  .gft-sheet .row,
+  .gft-sheet .tot-wrap {
+    background: #fff !important;
+    backdrop-filter: none !important;
+    -webkit-backdrop-filter: none !important;
+  }
+  
+  /* Modal */
+  .gft-modal,
+  .gft-modalContent,
+  .gft-galleryFrame {
+    background: #fff !important;
+    backdrop-filter: none !important;
+    -webkit-backdrop-filter: none !important;
+  }
+}
+/* MOBILE: kill heavy desktop panel, keep only the "Voir panier" button */
+@media (max-width: 1023px) {
+  /* Turn the whole panel into a simple bottom bar */
+  .gft-orderPanel {
+    position: fixed;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    max-width: 100%;
+    margin: 0;
+    border-radius: 0;
+    box-shadow: none !important;
+    background: transparent !important;
+    backdrop-filter: none !important;
+    -webkit-backdrop-filter: none !important;
+    pointer-events: none; /* container itself not clickable */
+    z-index: 9998;
+  }
+
+  /* Default: nothing inside it is clickable or visible */
+  .gft-orderPanel * {
+    pointer-events: none;
+  }
+
+  /* === KEEP ONLY THE MAIN BUTTON === */
+  #gftPlaceOrder {
+    display: block !important;
+    pointer-events: auto;        /* clickable */
+    width: 100%;
+    max-width: 100%;
+  }
+
+  /* Hide list, clear button, toggle etc. so they don't animate / repaint */
+  #gftCartItems,
+  #gftClearAll,
+  #gftCartToggle {
+    display: none !important;
+  }
+}
+/* MOBILE: remove glass effect from sheet + modal + panel */
+@media (max-width: 1023px) {
+  .gft-sheet,
+  .gft-modal,
+  .gft-orderPanel {
+    backdrop-filter: none !important;
+    -webkit-backdrop-filter: none !important;
+    background-color: #ffffff !important;
+  }
+}

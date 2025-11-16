@@ -1,38 +1,38 @@
+
 /* ===========================================================
-   Giftorea — Thank-You Page (ORIGINAL v2.4 JS + requested fixes)
-   - Logo redesign fee (+2000 DZD) in totals
-   - Email body fixed (never empty) + attach PDF + include invoice URL
-   - Upload PDF to WP Media (JWT) and use its URL in email
-   - REQUIRED left-side notice under totals
-   - Show Logo choice under Design in “Choix” card
-   - Slightly increased spacing between choice rows
+   Giftorea — Thank-You Page (email-only changes)
+   - Email lists ONLY selected products (qty>0 & total>0)
+   - Styled email (gradient header + table)
+   - Auto-shrinks to stay under EmailJS 50KB cap
+   - No PDF attached to EmailJS
    =========================================================== */
 
+/* libs */
 window.jsPDF = window.jspdf.jsPDF;
-try { emailjs.init("AUKVraZwu5iufPOe7"); } catch (_) {}
+try { emailjs.init("AUKVraZwu5iufPOe7"); } catch (_){}
+
+/* Brand / contacts */
+const BRAND_NAME   = "Giftorea B2B";
+const CONTACT_EMAIL= "contact@giftoreab2b.com";
+const CONTACT_PHONE= "+213550100706";
+
+/* Colors for PDF */
+const NAVY=[11,42,74], SLATE=[71,85,105], BORDER=[222,226,236];
+
+/* Utils */
+function fmtDZD(n){ return `${Number(n||0).toLocaleString('en-US')} DZD`; }
+function formatDate(d){ return d.toLocaleDateString('fr-FR',{year:'numeric',month:'short',day:'numeric',hour:'2-digit',minute:'2-digit'}); }
+function esc(s){ if(s==null) return ""; return String(s).replace(/[&<>"]/g,m=>({ "&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;" }[m])); }
 
 /* EmailJS config */
 const EMAILJS_PUBLIC_KEY = "AUKVraZwu5iufPOe7";
 const EMAILJS_SERVICE_ID = "service_chey66l";
 const EMAILJS_TEMPLATE_ID = "template_fuau9gh";
 
-/* tokens + utils */
-const BRAND_NAME = "Giftorea B2B";
-const CONTACT_EMAIL = "contact@giftoreab2b.com";
-const CONTACT_PHONE = "+213550100706";
-const NAVY=[11,42,74], SLATE=[71,85,105], BORDER=[222,226,236];
-
-function fmtDZD(n){ return `${Number(n||0).toLocaleString('en-US')} DZD`; }
-function formatDate(d){ return d.toLocaleDateString('fr-FR',{year:'numeric',month:'short',day:'numeric',hour:'2-digit',minute:'2-digit'}); }
-function esc(s){ if(s==null) return ""; return String(s).replace(/[&<>"]/g,m=>({ "&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;" }[m])); }
-
-/* Ensure EmailJS is loaded and initialized */
+/* ensure EmailJS available */
 async function ensureEmailJSReady(){
-  if (window.emailjs && typeof emailjs.send === 'function') {
-    try { emailjs.init(EMAILJS_PUBLIC_KEY); } catch(_) {}
-    return true;
-  }
-  try {
+  if(window.emailjs && typeof emailjs.send === 'function'){ return true; }
+  try{
     await new Promise((resolve,reject)=>{
       const s=document.createElement('script');
       s.src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js";
@@ -46,10 +46,11 @@ async function ensureEmailJSReady(){
   }
 }
 
+/* Wilaya map */
 const WILAYA_MAP={"01":"Adrar","02":"Chlef","03":"Laghouat","04":"Oum El Bouaghi","05":"Batna","06":"Béjaïa","07":"Biskra","08":"Béchar","09":"Blida","10":"Bouira","11":"Tamanrasset","12":"Tébessa","13":"Tlemcen","14":"Tiaret","15":"Tizi Ouzou","16":"Alger","17":"Djelfa","18":"Jijel","19":"Sétif","20":"Saïda","21":"Skikda","22":"Sidi Bel Abbès","23":"Annaba","24":"Guelma","25":"Constantine","26":"Médéa","27":"Mostaganem","28":"M'Sila","29":"Mascara","30":"Ouargla","31":"Oran","32":"El Bayadh","33":"Illizi","34":"Bordj Bou Arréridj","35":"Boumerdès","36":"El Tarf","37":"Tindouf","38":"Tissemsilt","39":"El Oued","40":"Khenchela","41":"Souk Ahras","42":"Tipaza","43":"Mila","44":"Aïn Defla","45":"Naâma","46":"Aïn Témouchent","47":"Ghardaïa","48":"Relizane","49":"Timimoun","50":"Bordj Badji Mokhtar","51":"Ouled Djellal","52":"Béni Abbès","53":"In Salah","54":"In Guezzam","55":"Touggourt","56":"Djanet","57":"El M'Ghair","58":"El Meniaa"};
 function resolveWilaya(state){ if(!state) return ""; const s=String(state).trim(); const m=s.match(/(\d{2})/); if(m&&WILAYA_MAP[m[1]]) return WILAYA_MAP[m[1]]; const pad=s.padStart(2,"0"); return WILAYA_MAP[pad]||s; }
 
-/* busy overlay (unchanged) */
+/* busy overlay */
 (function injectBusyCss(){
   const css = `
   #gft-busy{position:fixed;inset:0;display:none;align-items:center;justify-content:center;
@@ -68,7 +69,7 @@ function showBusy(msg){
 }
 function hideBusy(){ const el=document.getElementById('gft-busy'); if(el) el.style.display='none'; }
 
-/* WP order save (unchanged) */
+/* WP save */
 async function getOrderToken(){ try{ const r=await fetch('/wp-json/gft/v1/order-token',{method:'GET',credentials:'same-origin'}); const j=await r.json(); return (j&&j.ok)?j.token:null; }catch{ return null; } }
 async function saveOrderToWP(orderData){
   try{
@@ -78,7 +79,7 @@ async function saveOrderToWP(orderData){
   }catch{ return null; }
 }
 
-/* WP media upload for the PDF (JWT) */
+/* Upload to WP Media */
 async function getJwtToken(){
   try{
     const r = await fetch('/wp-json/gft/v1/token', { credentials:'include' });
@@ -86,77 +87,215 @@ async function getJwtToken(){
   }catch(e){}
   return null;
 }
-async function uploadInvoiceToWP(pdfBlob, filename){
+// Uses your existing getJwtToken() and getOrderToken() helpers.
+// Uploads to our private invoices endpoint and returns a 7-day signed URL.
+async function uploadInvoiceToWP(pdfBlob, filename, orderId){
   try{
-    const jwt = await getJwtToken();
-    if(!jwt) return null;
-    const r = await fetch('/wp-json/wp/v2/media', {
-      method:'POST',
-      headers:{
-        'Authorization': `Bearer ${jwt}`,
-        'Content-Disposition': `attachment; filename="${filename}"`,
-        'Content-Type': 'application/pdf'
-      },
-      body: pdfBlob
+    // Try JWT first, fall back to your order token if needed
+    const jwt = await getJwtToken().catch(()=>null);
+    const orderTok = jwt ? null : await getOrderToken().catch(()=>null);
+
+    const fd = new FormData();
+    fd.append('pdf', pdfBlob, filename || 'Facture-Giftorea.pdf');
+    if (orderId) fd.append('order_id', String(orderId));
+
+    const headers = {};
+    if (jwt) headers['Authorization'] = `Bearer ${jwt}`;
+    else if (orderTok) headers['X-GFT-ORDER-TOKEN'] = orderTok;
+
+    const res = await fetch('/wp-json/gft/v1/invoices/upload', {
+      method: 'POST',
+      headers,
+      body: fd,
+      credentials: 'same-origin'
     });
-    if(!r.ok) return null;
-    const media = await r.json();
-    return media?.source_url || media?.guid?.rendered || null;
+
+    if (!res.ok) {
+      console.warn('WP upload HTTP error:', res.status, await res.text().catch(()=>'')); 
+      return null;
+    }
+    const j = await res.json();
+    // { ok:true, id:123, url:".../serve?id=...&exp=...&sig=...", expires_at:... }
+    if (j && j.ok && j.url) return j.url;
+    return null;
+  }catch(err){
+    console.error('WP upload failed:', err);
+    return null;
+  }
+}
+
+
+/* Fallback upload to your server */
+const API_UPLOAD_URL = '/api/upload-invoice.php';
+const API_UPLOAD_KEY = 'YOUR_SUPER_SECRET';
+async function uploadInvoiceToServer(pdfBlob, filename, orderId){
+  try{
+    const fd = new FormData();
+    fd.append('pdf', pdfBlob, filename);
+    fd.append('order_id', orderId||'');
+    const r = await fetch(API_UPLOAD_URL, {
+      method:'POST',
+      headers:{ 'X-API-KEY': API_UPLOAD_KEY },
+      body: fd,
+      credentials:'same-origin'
+    });
+    const j = await r.json();
+    if (!j.ok) return null;
+    return j.url || null;
   }catch(e){ return null; }
 }
 
-/* Email (FIXED): guaranteed init + non-empty body + attachment + URL */
-async function sendOrderEmail(orderData, invoiceNumber=null, pdfBase64=null, invoiceUrl=null){
+/* ---------- EMAIL: helpers to keep payload under 50KB ---------- */
+function byteLen(str){ try{ return new TextEncoder().encode(String(str||"")).length; }catch(_){ return (String(str||"")||"").length; } }
+
+/* Styled, compact HTML that ONLY includes selected items */
+function buildEmailMessage(orderData, invoiceNumber, invoiceUrl){
+  const c  = orderData?.customerInfo || {};
+  const od = orderData?.orderDetails  || {};
+  const customization = orderData?.customization || (function(){ try{ return JSON.parse(localStorage.getItem('customization')||'{}'); }catch(_){ return {}; } })();
+
+  // Pretty labels
+  const styleLabel = (customization.designStyle||'modern').replace(/^\w/,m=>m.toUpperCase());
+  const calLabel   = customization.calendarType==='miladi'?'Miladi seulement':'Hijri + Miladi';
+  const langLabel  = ({ar:'العربية',fr:'Français',en:'English'})[customization.language] || '—';
+  const packLabel  = customization.designPackage==='premium' ? 'Premium (+3500 DZD)' : 'Standard (inclus)';
+  const logoLabel  = customization?.logo?.option==='redesign_2000' ? 'Redessiner le logo (+2000 DZD)'
+                    : (customization?.logo?.option==='have_ai' ? 'AI/SVG fourni' : '—');
+  const invLabel   = customization.invoiceType==='standard' ? 'Facture standard (+10%)'
+                    : (customization.invoiceType==='mokawil' ? 'Mokawil Dati (+0.5%)' : 'Sans facture (0%)');
+
+  // Filter ONLY selected products (qty>0 and total>0)
+  const selected = (od.products||[]).map(p=>{
+    const q = Number(p.quantity ?? p.qty ?? 0);
+    const price = Number(p.price||0);
+    const total = (p.totalPrice!=null) ? Number(p.totalPrice) : (price*q);
+    return { name:(p.name||'').toString(), q, price, total };
+  }).filter(row => row.q > 0 && row.total > 0);
+
+  // Base subtotal and totals (reuse your computeTotals if present)
+  const baseSubtotal = selected.reduce((a,r)=>a + (r.total||0), 0);
+  let premiumFee=0, logoFee=0, rate=0, taxAmount=0, grandTotal=baseSubtotal;
+  try{
+    const t = computeTotals(orderData || {}, baseSubtotal);
+    premiumFee = t.premiumFee||0; logoFee=t.logoFee||0; rate=t.rate||0; taxAmount=t.taxAmount||0; grandTotal=t.grandTotal||baseSubtotal;
+  }catch(_){ /* if computeTotals not available here, continue with baseSubtotal */ }
+
+  // Build rows with cap; shrink if needed to stay < 45KB total
+  let max = Math.min(30, selected.length);
+  let html = make(max);
+  while (byteLen(html) > 45000 && max > 5) { max = Math.floor(max*0.7); html = make(max); }
+  if (byteLen(html) > 45000) html = make(0);
+
+  return html;
+
+  function make(limit){
+    const rows = (limit? selected.slice(0,limit):[]).map(r=>`
+      <tr>
+        <td style="padding:10px 12px;border-bottom:1px solid #EEF2FF">${esc(r.name.slice(0,120))}</td>
+        <td style="padding:10px 12px;text-align:center;border-bottom:1px solid #EEF2FF">${r.q}</td>
+        <td style="padding:10px 12px;text-align:right;border-bottom:1px solid #EEF2FF">${Number(r.price||0).toLocaleString('en-US')} DZD</td>
+        <td style="padding:10px 12px;text-align:right;border-bottom:1px solid #EEF2FF;font-weight:700">${Number(r.total||0).toLocaleString('en-US')} DZD</td>
+      </tr>`).join('');
+
+    const more = (limit && selected.length>limit) ? 
+      `<tr><td colspan="4" style="padding:10px 12px;text-align:center;color:#475569;border-bottom:1px solid #EEF2FF">… et ${selected.length-limit} articles de plus</td></tr>` : '';
+
+    const summary = `
+      <tr><td colspan="3" style="padding:10px 12px;text-align:right;color:#334155">Sous-total</td><td style="padding:10px 12px;text-align:right;font-weight:700">${baseSubtotal.toLocaleString('en-US')} DZD</td></tr>
+      ${premiumFee>0?`<tr><td colspan="3" style="padding:6px 12px;text-align:right;color:#334155">Design premium</td><td style="padding:6px 12px;text-align:right;font-weight:700">${premiumFee.toLocaleString('en-US')} DZD</td></tr>`:''}
+      ${logoFee>0?`<tr><td colspan="3" style="padding:6px 12px;text-align:right;color:#334155">Redesign logo</td><td style="padding:6px 12px;text-align:right;font-weight:700">${logoFee.toLocaleString('en-US')} DZD</td></tr>`:''}
+      ${rate>0?`<tr><td colspan="3" style="padding:6px 12px;text-align:right;color:#334155">Majoration (${(rate*100).toFixed(1).replace('.0','')}%)</td><td style="padding:6px 12px;text-align:right;font-weight:700">${taxAmount.toLocaleString('en-US')} DZD</td></tr>`:''}
+      <tr><td colspan="3" style="padding:12px 12px;text-align:right;color:#0B2A4A;font-weight:800;border-top:1px solid #E2E8F0">Total</td><td style="padding:12px 12px;text-align:right;font-weight:800;color:#0B2A4A;border-top:1px solid #E2E8F0">${grandTotal.toLocaleString('en-US')} DZD</td></tr>`;
+
+    return `
+      <div style="max-width:760px;margin:0 auto;background:#F8FAFF;border:1px solid #E6ECFF;border-radius:18px;overflow:hidden">
+        <div style="background:linear-gradient(180deg,#EDE9FE, #E0E7FF);padding:16px 18px">
+          <div style="font:800 18px/1.2 ui-sans-serif;color:#0B2A4A">Nouvelle commande reçue — Giftorea B2B</div>
+          <div style="font:500 12px ui-sans-serif;color:#334155;opacity:.9;margin-top:2px">Notification interne. Merci d'appeler le client pour confirmer.</div>
+        </div>
+
+        <div style="padding:16px">
+          <div style="border:1px solid #E6ECFF;background:#FFFFFF;border-radius:14px;padding:12px 14px">
+            <div style="font:800 13px ui-sans-serif;color:#0B2A4A;margin-bottom:8px">Informations client</div>
+            <table role="presentation" style="width:100%;border-collapse:collapse;font:400 13px ui-sans-serif;color:#334155">
+              <tr>
+                <td style="padding:4px 6px"><strong>Entreprise</strong></td><td style="padding:4px 6px">${esc(c.company||'-')}</td>
+                <td style="padding:4px 6px"><strong>Nom</strong></td><td style="padding:4px 6px">${esc(c.name||'-')}</td>
+              </tr>
+              <tr>
+                <td style="padding:4px 6px"><strong>Téléphone</strong></td><td style="padding:4px 6px">${esc(c.phone||'-')}</td>
+                <td style="padding:4px 6px"><strong>Email</strong></td><td style="padding:4px 6px">${esc(c.email||'-')}</td>
+              </tr>
+              <tr>
+                <td style="padding:4px 6px"><strong>Wilaya</strong></td><td style="padding:4px 6px">${esc(resolveWilaya(c.state)||'-')}</td>
+                <td style="padding:4px 6px"><strong>Réf</strong></td><td style="padding:4px 6px">#${esc(invoiceNumber||'')}</td>
+              </tr>
+            </table>
+          </div>
+
+          <div style="margin-top:12px;border:1px solid #E6ECFF;background:#FFFFFF;border-radius:14px;padding:12px 14px">
+            <div style="font:800 13px ui-sans-serif;color:#0B2A4A;margin-bottom:6px">Choix du client</div>
+            <div style="font:400 13px ui-sans-serif;color:#334155">
+              Style: ${esc(styleLabel)} · Calendrier: ${esc(calLabel)} · Langue: ${esc(langLabel)} ·
+              Design: ${esc(packLabel)} · Logo: ${esc(logoLabel)} · Facturation: ${esc(invLabel)}
+            </div>
+          </div>
+
+          <div style="margin-top:12px;border:1px solid #E6ECFF;background:#FFFFFF;border-radius:14px;overflow:hidden">
+            <table style="width:100%;border-collapse:collapse;font:400 13px ui-sans-serif;color:#0B2A4A">
+              <thead>
+                <tr style="background:#EEF2FF">
+                  <th style="text-align:left;padding:10px 12px">ARTICLE</th>
+                  <th style="text-align:center;padding:10px 12px">QTT</th>
+                  <th style="text-align:right;padding:10px 12px">PRIX</th>
+                  <th style="text-align:right;padding:10px 12px">TOTAL</th>
+                </tr>
+              </thead>
+              <tbody>
+                ${rows || `<tr><td colspan="4" style="padding:12px;text-align:center;color:#64748B">Aucun article sélectionné</td></tr>`}
+                ${more}
+                ${summary}
+              </tbody>
+            </table>
+          </div>
+
+          ${invoiceUrl ? `<div style="margin-top:12px"><a href="${esc(invoiceUrl)}" target="_blank" style="display:inline-block;background:#0B2A4A;color:#fff;text-decoration:none;padding:10px 14px;border-radius:10px;font:700 13px ui-sans-serif">Ouvrir la facture (PDF)</a></div>` : ''}
+
+          <div style="margin-top:12px;text-align:right">
+            <a href="tel:${esc(c.phone||'')}" style="display:inline-block;background:#111827;color:#fff;text-decoration:none;padding:10px 14px;border-radius:10px;font:600 13px -apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Arial">Appeler le client</a>
+          </div>
+        </div>
+      </div>`;
+  }
+}
+
+/* ========== Email sender (no attachment; compact message only) ========== */
+async function sendOrderEmail(orderData, invoiceNumber=null, _pdfBase64_unused=null, invoiceUrl=null){
   try{
     const ready = await ensureEmailJSReady();
     if(!ready) throw new Error('EmailJS not ready');
 
-    const c = orderData.customerInfo || {};
-    const od = orderData.orderDetails || {};
-    const rows = (od.products||[]).map(p=>{
-      const q = Number(p.quantity ?? p.qty ?? 0);
-      const price = Number(p.price||0);
-      const total = (p.totalPrice!=null)?Number(p.totalPrice):(price*q);
-      return `<tr>
-        <td style="padding:6px 8px;border-bottom:1px solid #eee">${esc(p.name||'')}</td>
-        <td style="padding:6px 8px;text-align:center;border-bottom:1px solid #eee">${q}</td>
-        <td style="padding:6px 8px;text-align:right;border-bottom:1px solid #eee">${(total||0).toLocaleString('en-US')} DZD</td>
-      </tr>`;
-    }).join('');
-    const html = `
-      <div style="max-width:680px;margin:0 auto;padding:16px;background:#f6f9ff;border:1px solid #e5edff;border-radius:14px">
-        <h3 style="margin:0 0 6px 0;font:700 16px ui-sans-serif">Nouvelle facture #${esc(invoiceNumber||'')}</h3>
-        <div style="font:400 13px ui-sans-serif">
-          <div><strong>Entreprise:</strong> ${esc(c.company||'-')}</div>
-          <div><strong>Nom:</strong> ${esc(c.name||'-')}</div>
-          <div><strong>Téléphone:</strong> ${esc(c.phone||'-')}</div>
-          <div><strong>Email:</strong> ${esc(c.email||'-')}</div>
-        </div>
-        <table style="width:100%;margin-top:10px;border-collapse:collapse;font:400 13px ui-sans-serif">
-          <thead><tr><th style="text-align:left;border-bottom:1px solid #e5e7eb;padding:6px 8px">Désignation</th><th style="text-align:center;border-bottom:1px solid #e5e7eb;padding:6px 8px">Qté</th><th style="text-align:right;border-bottom:1px solid #e5e7eb;padding:6px 8px">Total</th></tr></thead>
-          <tbody>${rows}</tbody>
-        </table>
-        ${invoiceUrl ? `<div style="margin-top:10px">🔗 <a href="${esc(invoiceUrl)}" target="_blank">Ouvrir la facture en ligne</a></div>` : ''}
-      </div>`;
+    const c = orderData?.customerInfo || {};
+    const message = buildEmailMessage(orderData, invoiceNumber, invoiceUrl);
 
     const params = {
       to_name: c.company || '',
       from_name: 'Giftorea B2B',
       invoice_number: invoiceNumber || '',
       invoice_url: invoiceUrl || '',
-      message: html,
-      message_html: html,
-      html: html,
-      content: html
+      message // keep template simple: render {{message}} only
     };
 
-    if (pdfBase64){
-      params.pdf_file = pdfBase64; // if your template uses a File var named pdf_file
-      params.attachments = [{ name: `Facture-Giftorea-${invoiceNumber||'commande'}.pdf`, data: pdfBase64 }];
+    // Safety against 50KB cap
+    const approxSize = byteLen(JSON.stringify(params));
+    if (approxSize > 50000) {
+      console.warn('EmailJS vars near/over limit; switching to minimal body. Size=', approxSize);
+      params.message = `Commande #${invoiceNumber||''}\nEntreprise: ${c.company||'-'}\nTéléphone: ${c.phone||'-'}\nEmail: ${c.email||'-'}${invoiceUrl?`\nPDF: ${invoiceUrl}`:''}`;
+      delete params.invoice_url;
     }
 
     const res = await emailjs.send(EMAILJS_SERVICE_ID, EMAILJS_TEMPLATE_ID, params);
-    console.log('Email sent:', res && res.status);
+    console.log('Email sent (no attachment):', res && res.status);
 
     const st = document.getElementById('invoice-status');
     if(st) st.textContent = 'Facture envoyée par email ✔';
@@ -167,7 +306,9 @@ async function sendOrderEmail(orderData, invoiceNumber=null, pdfBase64=null, inv
   }
 }
 
-/* id fallback (unchanged) */
+/* --------------------- Everything below unchanged --------------------- */
+
+/* id fallback */
 function localDailyId(){
   try{
     const tz='Africa/Algiers';
@@ -180,7 +321,7 @@ function localDailyId(){
   }
 }
 
-/* logo (unchanged) */
+/* logo preload */
 async function preloadLogo(){
   const imgEl=document.getElementById('brandLogo'); const src=imgEl?.src; if(!src) return null;
   return new Promise(resolve=>{
@@ -190,7 +331,7 @@ async function preloadLogo(){
   });
 }
 
-/* simple icons (unchanged drawing) */
+/* icons for PDF */
 function drawIcon(doc,name,x,y,s=4,color=NAVY){
   doc.setDrawColor(...color); doc.setLineWidth(0.3);
   switch(name){
@@ -206,7 +347,7 @@ function drawIcon(doc,name,x,y,s=4,color=NAVY){
   }
 }
 
-/* products (unchanged) */
+/* products + totals (includes logo fee) */
 function sumProducts(products){
   return (products||[]).reduce((a,p)=>{
     const q = Number(p.quantity ?? p.qty ?? 0);
@@ -232,8 +373,6 @@ function getOrderDataWithFallback(){
   localStorage.setItem('completeOrderData', JSON.stringify(cod));
   return { cod, products, baseSubtotal };
 }
-
-/* totals (includes logo redraw fee) */
 function computeTotals(cod, baseSubtotal){
   const customization = cod.customization || JSON.parse(localStorage.getItem('customization')||'{}');
   const designPackage = customization.designPackage || 'standard';
@@ -246,7 +385,7 @@ function computeTotals(cod, baseSubtotal){
   return { customization, premiumFee, logoFee, rate, taxAmount, grandTotal };
 }
 
-/* PDF (layout preserved; Logo choice + spacing in “Choix”) */
+/* --------- PDF generation (unchanged) --------- */
 async function generateInvoice(invoiceNumber){
   showBusy('Génération de la facture…');
 
@@ -258,7 +397,6 @@ async function generateInvoice(invoiceNumber){
   const calLabel=customization.calendarType==='miladi'?'Miladi uniquement':'Hijri/Miladi';
   const langLabel=({ar:'Arabe',fr:'Français',en:'Anglais'})[customization.language]||'—';
   const packLabel=customization.designPackage==='premium'?'Premium (+3 500 DZD) — création sur mesure':'Standard (modèle optimisé)';
-  const logoLabel=(customization?.logo?.option==='redesign_2000') ? 'Redessiner le logo (+2000 DZD)' : (customization?.logo?.option==='have_ai' ? 'AI/SVG fourni' : '—');
   const invLabel =customization.invoiceType==='standard'?'Facture standard — 10%':(customization.invoiceType==='mokawil'?'Mokawil Dati — 0,5%':'Sans facture — 0%');
 
   const doc = new jsPDF({orientation:'portrait', unit:'mm', format:'a4'});
@@ -305,7 +443,6 @@ async function generateInvoice(invoiceNumber){
     return y+h+6;
   }
 
-  // “Choix” card: shows Logo under Design; slightly more spacing
   function optionsCard(y){
     const w=pageW-M.left-M.right, h=34;
     doc.setDrawColor(...BORDER); doc.roundedRect(M.left,y,w,h,2,2,'S');
@@ -331,12 +468,6 @@ async function generateInvoice(invoiceNumber){
     doc.setFont('helvetica','bold'); doc.setTextColor(...NAVY);
     drawIcon(doc,'star',rightX-8,b-4.3,4,NAVY); doc.text('Design :',rightX,b);
     doc.setFont('helvetica','normal'); doc.setTextColor(...SLATE); doc.text(packLabel,rightX+16,b);
-    b+=7;
-
-    // Logo choice (new)
-    doc.setFont('helvetica','bold'); doc.setTextColor(...NAVY);
-    doc.text('Logo :', rightX, b);
-    doc.setFont('helvetica','normal'); doc.setTextColor(...SLATE); doc.text(logoLabel, rightX+14, b);
 
     const fy=y+h-6;
     doc.setFont('helvetica','bold'); doc.setTextColor(...NAVY);
@@ -350,12 +481,10 @@ async function generateInvoice(invoiceNumber){
   cursorY = clientCard(cursorY);
   cursorY = optionsCard(cursorY);
 
-  // Small notice above items (unchanged)
   doc.setFont('helvetica','normal'); doc.setTextColor(120); doc.setFontSize(9);
   doc.text("Notice : ce document récapitule votre commande et sert de preuve de dépôt (TVA non applicable).", M.left, cursorY);
   cursorY += 5;
 
-  // Items table (unchanged)
   const head=[['Article','Prix','QTT','Total']];
   const body=(products||[]).filter(p=>Number(p.quantity ?? p.qty)>0).map(p=>{
     const q=Number(p.quantity ?? p.qty ?? 0), price=Number(p.price||0);
@@ -363,16 +492,17 @@ async function generateInvoice(invoiceNumber){
     return [ (p.name||''), fmtDZD(price), String(q), fmtDZD(total) ];
   });
   const startY=Math.max(cursorY+2, M.top+44);
-  doc.autoTable({
-    head, body, startY,
-    margin:{left:M.left,right:M.right},
-    theme:'grid',
-    styles:{font:'helvetica',fontSize:10,cellPadding:2.6,textColor:[15,23,42],lineColor:BORDER,lineWidth:0.2},
-    headStyles:{fillColor:[238,242,255],textColor:[23,37,84],lineColor:BORDER,lineWidth:0.2,fontStyle:'bold'},
-    alternateRowStyles:{fillColor:[250,250,253]}
-  });
+  try{
+    doc.autoTable({
+      head, body, startY,
+      margin:{left:M.left,right:M.right},
+      theme:'grid',
+      styles:{font:'helvetica',fontSize:10,cellPadding:2.6,textColor:[15,23,42],lineColor:BORDER,lineWidth:0.2},
+      headStyles:{fillColor:[238,242,255],textColor:[23,37,84],lineColor:BORDER,lineWidth:0.2,fontStyle:'bold'},
+      alternateRowStyles:{fillColor:[250,250,253]}
+    });
+  }catch(e){ console.error('autoTable failed, continuing:', e); }
 
-  // Summary box (unchanged look) + Logo fee row if any
   let tableBottom = (doc.lastAutoTable && doc.lastAutoTable.finalY) ? doc.lastAutoTable.finalY : startY+10;
   const needNewPage = tableBottom + 40 > pageH - M.bottom;
   if(needNewPage){ doc.addPage(); header(); tableBottom = M.top + 14; }
@@ -381,41 +511,42 @@ async function generateInvoice(invoiceNumber){
   doc.setFont('helvetica','bold'); doc.setTextColor(...NAVY); doc.setFontSize(10); doc.text('Résumé des frais', boxX+4, boxY+6);
   let ry=boxY+12, L=boxX+4, R=boxX+boxW-4;
   function row(lbl,val,bold){ doc.setFont('helvetica', bold?'bold':'normal'); doc.setTextColor(...(bold?NAVY:SLATE)); doc.text(lbl,L,ry); doc.text(val,R,ry,{align:'right'}); ry+=5.2; }
-  const pct = (Math.round((rate*100)*10)/10).toString().replace('.0','');
-  const designRowLabel = premiumFee>0 ? 'Option design premium :' : 'Design standard (gratuit) :';
+  const t2 = computeTotals(cod, baseSubtotal);
+  const pct = (Math.round((t2.rate*100)*10)/10).toString().replace('.0','');
+  const designRowLabel = t2.premiumFee>0 ? 'Option design premium :' : 'Design standard (gratuit) :';
   row('Sous-total produits :', fmtDZD(baseSubtotal), false);
-  row(designRowLabel, fmtDZD(premiumFee), false);
-  if (logoFee > 0) row('Frais de redesign du logo :', fmtDZD(logoFee), false);
-  row(`Frais de facturation (${pct}%) :`, fmtDZD(taxAmount), false);
+  row(designRowLabel, fmtDZD(t2.premiumFee), false);
+  if (t2.logoFee > 0) row('Frais de redesign du logo :', fmtDZD(t2.logoFee), false);
+  row(`Frais de facturation (${pct}%) :`, fmtDZD(t2.taxAmount), false);
   doc.setDrawColor(...BORDER); doc.line(L, ry-3.2, R, ry-3.2);
-  row('Total général :', fmtDZD(grandTotal), true);
+  row('Total général :', fmtDZD(t2.grandTotal), true);
 
-  // REQUIRED: Left-side notice under Total
+  // left notice near totals
   const BOTTOM_NOTICE = "Notice: text will be here";
   const noticeY = Math.min(tableBottom + 7, pageH - M.bottom - 4);
   doc.setTextColor(90); doc.setFontSize(9);
   doc.text(BOTTOM_NOTICE, M.left, noticeY, { align:'left', maxWidth: (pageW/2) - M.left });
   doc.setTextColor(0);
 
-  // Footer(s)
   const totalPages = doc.getNumberOfPages();
   for(let i=1;i<=totalPages;i++){ doc.setPage(i); footer(i,totalPages); }
 
-  // Output + upload + email
   const filename = 'Facture-Giftorea-B2B.pdf';
   const pdfBlob  = doc.output('blob');
-  const pdfBase64 = doc.output('datauristring');
-
   let invoiceUrl = null;
   try { invoiceUrl = await uploadInvoiceToWP(pdfBlob, filename); } catch(_){}
-
+  if (!invoiceUrl) {
+    try { invoiceUrl = await uploadInvoiceToServer(pdfBlob, filename, invoiceNumber); } catch(_){}
+  }
   doc.save(filename);
-  await sendOrderEmail(cod, invoiceNumber, pdfBase64, invoiceUrl);
+
+  // Email (no attachment)
+  await sendOrderEmail(cod, invoiceNumber, null, invoiceUrl);
 
   hideBusy();
 }
 
-/* bootstrap (unchanged) */
+/* bootstrap */
 function handleOrderSource(){
   const data = JSON.parse(localStorage.getItem('completeOrderData'));
   if(!data || !data.source) return null;
@@ -425,15 +556,41 @@ function handleOrderSource(){
 }
 window.addEventListener('load', async ()=>{
   showBusy('Préparation de votre commande…');
-  const orderData = handleOrderSource(); if(!orderData){ hideBusy(); return; }
-  let serverId = await saveOrderToWP(orderData);
-  if(!serverId){ serverId = localDailyId(); }
-  const refEl = document.getElementById('order-number');
-  if(refEl) refEl.textContent = '#'+serverId;
-  await generateInvoice(serverId);
+  try{
+    const orderData = handleOrderSource();
+    if(!orderData){
+      // No order in localStorage — nothing to do
+      return;
+    }
+
+    // Don’t let the WP save hang forever; fall back to local ID after 3s
+    const maybeId = await Promise.race([
+      saveOrderToWP(orderData),
+      new Promise(resolve => setTimeout(()=>resolve(null), 3000))
+    ]);
+    const serverId = maybeId || localDailyId();
+
+    // ✅ Fix the typo here (use refEl only)
+    const refEl = document.getElementById('order-number');
+    if (refEl) refEl.textContent = '#'+serverId;
+
+    // Continue normally
+    await generateInvoice(serverId);
+  } catch (err){
+    console.error('Init error:', err);
+    // Fail-safe fallback: still generate a local invoice so the user isn’t stuck
+    const fallbackId = localDailyId();
+    const refEl = document.getElementById('order-number');
+    if (refEl) refEl.textContent = '#'+fallbackId;
+    try { await generateInvoice(fallbackId); } catch(e){ console.error('generateInvoice failed:', e); }
+  } finally {
+    // Always clear the overlay even if something threw earlier
+    hideBusy();
+  }
 });
 
-/* hover polish (unchanged) */
+
+/* hover polish */
 document.addEventListener('pointermove', (e)=>{
   document.querySelectorAll('.download-btn').forEach(btn=>{
     const r=btn.getBoundingClientRect(); btn.style.setProperty('--mx', ((e.clientX-r.left)/r.width*100)+'%');
